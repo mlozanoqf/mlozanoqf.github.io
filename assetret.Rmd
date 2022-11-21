@@ -1,0 +1,365 @@
+---
+title: ''
+output: pdf_document
+---
+
+# Asset returns.
+
+An asset is any resource owned by a business or an economic entity. It is anything that can produce value (or returns) in the future. Here, we frequently use firm stocks as financial assets, but we also show other examples of assets such as commodities (oil), currencies, bonds, derivatives, etc.
+
+A return is the percentage change of an asset price. In finance, we are very interested in asset returns because it allows us to measure asset (like stocks) performance in relative terms. Consider the following example. In (1) I buy at 100 USD and sell at 110 USD; and in (2) I buy at 10 USD and sell at 12 USD. I make money in both situations, that is for sure because $110 > 100$ and $12 > 10$. But which situation was the best deal? In absolute terms, I made 10 USD in (1) and only 2 USD in (2). However, in relative terms I made 10% in (1) and a great 20% in (2).
+
+The previous returns were calculated as a simple percentage change: $(110-100)/100$ and $(12-10)/10$ respectively. We can calculate log-returns instead and these are equivalent, and sometimes we prefer to calculate log-returns especially when we deal with short periods of time. In this case the log-returns are $log(110/100)$ and $log(12/10)$ which are 9.53% and 18.23% respectively.
+
+Both absolute and relative valuations (10 USD versus 2 USD, and 10% versus 20%) are important and valid depending on what we want to report. However, the good thing about the relative approach (percentages) is that we can compare among different alternatives more easily. Returns also have some relevant statistical properties (like stationarity) that are needed to implement some quantitative financial and econometrics models.
+
+Even returns can be expressed in relative terms with respect to the associated asset risk. Consider another example. In (1) I have an asset with an expected return of 5% with a risk of 5%; and in (2) a different asset with an expected return of 5% with a risk of 10%. So, in relative terms (1) is an asset with 1 unit of return per unit of risk and (2) is an asset with 0.5 unit of return per unit of risk. Now, it is clear we should prefer alternative (1).
+
+There are more technical reasons to work with returns, but we can proceed with our analysis. Also, there are other ways to measure and report asset returns including different frequencies, cumulative returns, compounded returns, etc., but that is something we can discuss later.
+
+## From prices to returns.
+
+We need time series of asset prices to calculate time series of asset returns. Let's begin with a visual representation of the FANG database. Here, we have daily stock prices per stock.
+
+```{r}
+# Plot the data.
+FANG_daily_all <- FANG |>
+    group_by(symbol) |>
+    ggplot(aes(x = date, y = adjusted, color = symbol)) +
+    geom_line(size = 1) +
+    labs(title = "Daily stock prices - not so easy to read.",
+         x = "", y = "Adjusted prices", color = "") +
+    scale_y_continuous(labels = scales::dollar) +
+    theme_tq() + scale_color_tq()
+FANG_daily_all
+```
+
+See how stock prices fluctuate in different ranges. It would be a mistake to prefer Amazon or Google simply because they experience larger price changes compared with Facebook or Netflix as we discuss in the previous section. Taking investment decisions based on prices could be misleading because investors are most of the time looking for returns, and in particular for an attractive risk-return combination. The vertical axis is also problematic in the plot as it is difficult to see the price evolution clearly for each stock. In sum, we do not take investment decisions based on this kind of visual representation. If we are interested to evaluate the stock performance, we need a risk-return analysis, not a price chart.
+
+Let's add one line of code to see the price time-series more clearly.
+
+```{r}
+# Facet makes it easier to read.
+FANG_daily <- FANG |>
+    group_by(symbol) |>
+    ggplot(aes(x = date, y = adjusted, color = symbol)) +
+    geom_line(size = 1) +
+    labs(title = "Daily Stock Prices - easier to read",
+         x = "", y = "Adjusted Prices", color = "") +
+    facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
+    scale_y_continuous(labels = scales::dollar) +
+    theme_tq() + scale_color_tq()
+FANG_daily
+```
+
+Now it is clear that all stock prices have a positive trend over time. It is also clear that 2014 was a bad year for Amazon, Google and even Netflix. This is because the stock price decreased in the period of 2014-2015. The year 2015 was good for Amazon and Google. The main point is that this new visualization of the data can help us to compare the evolution of price per stock. Remember we still have prices and not returns. Stock returns are easily calculated in R.
+
+Here, we first select adjusted prices, then transform into yearly returns.
+
+```{r}
+# Create yearly returns.
+FANG_annual_returns <- FANG |>
+    group_by(symbol) |>
+    tq_transmute(select     = adjusted,
+                 mutate_fun = periodReturn,
+                 period     = "yearly",
+                 type       = "arithmetic")
+FANG_annual_returns
+```
+
+This is what we call tidy data because (1) each variable forms a column; (2) each observation forms a row; and (3) each type of observational unit forms a table. These yearly returns are expressed in decimal notation. This means that 0.95 is in reality 95%.
+
+The next chunk of code shows how to visualize the annual returns in a nice plot.
+
+```{r}
+# Plot the annual returns.
+FANG_annual_returns |>
+    ggplot(aes(x = date-365, y = yearly.returns, fill = symbol)) +
+    geom_col() +
+    geom_hline(yintercept = 0, color = palette_light()[[1]]) +
+    scale_y_continuous(labels = scales::percent) +
+    labs(title = "FANG: Annual Returns",
+         y = "Annual Returns", x = "") +
+    facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
+    theme_tq() + scale_fill_tq()
+```
+
+Risky stocks like these are risky because the returns change drastically from time to time. Note that here, it is easy to see that 2014 was indeed a bad year for Amazon, Google and Netflix as we anticipate when looking at the price chart. These three assets confirm what we anticipate before because we see negative returns in 2014. The year 2015 was good for Amazon and Google as we said before.
+
+The question that arises now is: What would be the result of investing money in each stock during these years (starting the first day of 2013 and finishing the last day of 2016)? Yearly returns show what happens from one year to another, but we cannot tell which stock would represent the best investment strategy in these years looking at this past information. Cumulative returns can be useful to answer this question.
+
+## Cumulative returns.
+
+Let's start with a brief note about working with quantities affected by percentage changes. My salary is 100 USD and I manage to get a 5% increase. Then my new salary is $100 \times (1+0.05) = 105$. If I do $100 \times 0.05 = 5$ I only get the net increase, but what I care about is my new salary. Now I negotiate to change from full-time to part-time and agree to a salary decrease of 20%. Then, my current salary is $100 \times (1+0.05) \times (1-0.2) = 84$.
+
+Imagine we invest 100 USD in Amazon for this period. Let's calculate the value of our investment considering that we receive the four yearly returns listed and shown above. Remember the Amazon's yearly returns from 2013 to 2016 are: 54.98%, −22.18%, 117.78%, 10.95% in this specific order.
+
+```{r}
+# Investment in USD.
+investment = 100
+# Amazon's cumulative return in percentage.
+AMZN_cum_percentage = (1+0.54984265)*(1-0.22177086)*
+  (1+1.17783149)*(1+0.10945565) - 1 
+# Amazon's cumulative return in USD.
+AMZN_cum_usd = investment * (1 + AMZN_cum_percentage)
+# Show results.
+AMZN_cum_percentage
+AMZN_cum_usd
+```
+
+The dollar value of 100 USD invested in Amazon at the end of the 4 years is 291.4267 USD. The cumulative return is 191.4267%. For the sake of clarity, we can check these values are correct by applying this return over the 100 USD: $100 \times (1+1.914267) = 291.4267$.
+
+The 191.4267% cumulative return is usually not reported as it is here because it accumulates 4 years of returns. We normally express mean returns, in this case mean yearly return. The arithmetic mean of the returns, calculated by taking the sum of the returns and dividing by 4 is:
+
+```{r}
+# Arithmetic mean return.
+AMZN_arith_mean_retun = (0.54984265 - 0.22177086 + 
+                           1.17783149 + 0.10945565) / 4
+AMZN_arith_mean_retun
+```
+
+Let's reveal a problem with returns calculated as an arithmetic mean that it is sometimes disregarded. In our example, the arithmetic mean of returns is 40.38397% per year. Note that this could be misleading if we calculate the growth of a 100 USD investment for four years:
+
+```{r}
+# The long way.
+investment * (1 + AMZN_arith_mean_retun) * 
+  (1 + AMZN_arith_mean_retun) * 
+  (1 + AMZN_arith_mean_retun) * (1 + AMZN_arith_mean_retun)
+# The short way.
+investment * (1 + AMZN_arith_mean_retun) ^ 4
+```
+
+See something strange? We know that the dollar value of 100 USD invested in Amazon at the end of the 4 years is 291.4267 USD. However, taking this mean arithmetic return we have 388.3919 USD. See how problematic this could be. I can say my 100 USD investment in Amazon during the past 4 years was great because I get a mean return of 40.38397% per year. People might think that my money grew from 100 USD to 388.3919 USD by the end of the fourth year, whereas in reality my money grew from 100 USD to 291.4267 USD.
+
+The way we reconcile this difference is by calculating a geometric mean return rather than an arithmetic mean return. A geometric mean is the $n$th root of the product of $n$ numbers. In particular:
+
+```{r}
+# Geometric mean return.
+AMZN_geom_mean_retun = ((1+0.54984265)*(1-0.22177086)*
+  (1+1.17783149)*(1+0.10945565)) ^ (1/4) - 1
+AMZN_geom_mean_retun
+```
+
+I can say my 100 USD investment in Amazon during the past 4 years was great because I get a mean (geometric) return of 30.65689% per year. People might think that my money grew from 100 USD to 291.4267 USD by the end of the fourth year, and this is correct. Let's verify the procedure.
+
+```{r}
+# The long way.
+investment * (1 + AMZN_geom_mean_retun) * 
+  (1 + AMZN_geom_mean_retun) * 
+  (1 + AMZN_geom_mean_retun) * (1 + AMZN_geom_mean_retun)
+# The short way.
+investment * (1 + AMZN_geom_mean_retun) ^ 4
+```
+
+This phenomenon is an example of a result that is well known in mathematics. The geometric mean of a set of numbers is always less than the arithmetic mean (30.6 \< 40.3). Although our arithmetic mean return of 40.38397% can lead to an overestimation of the investment dollar returns, we usually report mean returns. This is a common issue when reporting mutual funds returns as it is tempting to report arithmetic mean returns because they are higher. This is why in some jurisdictions, regulations require fund managers to report geometric mean returns instead (30.65689% in this case).
+
+For now, we will work with arithmetic returns. Let's see How 100 USD investment growth each year per stock. Note that the plotted values are in USD.
+
+```{r}
+# Yearly returns.
+FANG_annual_returns <- FANG |>
+    group_by(symbol) |>
+    tq_transmute(select     = adjusted,
+                 mutate_fun = periodReturn,
+                 period     = "yearly",
+                 type       = "arithmetic")
+# Cumulative returns.
+FANG_annual_cum_returns <- FANG_annual_returns |>
+  mutate(cr = 100*cumprod(1 + yearly.returns)) |>
+# Plot the results.
+  ggplot(aes(x = date-365, y = cr, fill = symbol)) + geom_col() + 
+  labs(title = "Yearly cumulative USD returns.",
+  subtitle = "100 USD investment growth from 2013-01-01 to 2016-12-31.",
+  x = "", y = "USD value at the end of the year", color = "") +
+  scale_y_continuous(labels = scales::dollar) +
+  facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
+  theme_tq() + scale_color_tq()
+FANG_annual_cum_returns
+```
+
+Please verify that the dollar value of 100 USD invested in Amazon at the end of the 4 years is 291.4267 USD, as we discussed before.
+
+We can also modify the code above to show monthly returns (in percentage) instead of yearly.
+
+```{r}
+# Monthly returns.
+FANG_monthly_returns <- FANG |>
+    group_by(symbol) |>
+    tq_transmute(select     = adjusted,
+                 mutate_fun = periodReturn,
+                 period     = "monthly",
+                 type       = "arithmetic")
+# Plot the results.
+ggplot(FANG_monthly_returns, aes(x = date-12, 
+       y = monthly.returns, fill = symbol)) +
+  geom_col() +
+  geom_hline(yintercept = 0, color = palette_light()[[1]]) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "FANG: Monthly Returns", y = "Monthly Returns", 
+       x = "") +
+  facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
+  theme_tq() + scale_fill_tq()
+```
+
+By increasing the frequency from yearly to monthly we now have 12 observations per month instead of 1. Note that this new plot reveals how volatile these stock returns are. There is a negative return just the month after GOOG reached a positive 20% return. It looks hard to anticipate what will happen the next month since there is evidence that these returns change from positive to negative quite frequently.
+
+Let's see cumulative monthly returns per stock to extend our 100 USD investment example.
+
+```{r}
+# Calculate monthly cumulative returns.
+FANG_monthly_cum_returns <- FANG_monthly_returns |>
+  mutate(cr = 100 * cumprod(1 + monthly.returns))
+# Plot results.
+ggplot(FANG_monthly_cum_returns, aes(x = date-12, y = cr, 
+                                     color = symbol)) +
+  geom_line(size = 1) +
+  labs(title = "Monthly cumulative USD returns.",
+subtitle = "100 USD investment growth from 2013-01-01 to 2016-12-31.",
+         x = "", y = "USD value at the end of the year", 
+color = "") +
+  scale_y_continuous(labels = scales::dollar) +
+  theme_tq() + scale_color_tq()
+```
+
+Alternatively, we can split the plot in four panels. This facilitates the reading of the plot.
+
+```{r}
+# Plot results.
+ggplot(FANG_monthly_cum_returns, aes(x = date-12, y = cr, 
+                                     color = symbol)) +
+  geom_line(size = 1) +
+  labs(title = "Monthly cumulative USD returns.",
+subtitle = "100 USD investment growth from 2013-01-01 to 2016-12-31.",
+         x = "", y = "USD value at the end of the year", 
+color = "") +
+  scale_y_continuous(labels = scales::dollar) +
+  facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
+  theme_tq() + scale_color_tq()
+```
+
+Again, please verify that the dollar value of 100 USD invested in Amazon at the end of the 4 years is 291.4267 USD, as we discussed before. Here, we can see the USD evolution of my investment every month.
+
+Remember this plot?
+
+```{r}
+# FANG stock prices.
+FANG_daily_all
+```
+
+Netflix stock price remains down all the time. However, 100 USD invested in Netflix during these 4 year would lead to the highest value of almost 1000 USD. This is why we should conduct a return analysis to make investment decisions.
+
+Plotting prices and returns over time is revealing because we can see the evolution of the stock performance over time. It is useful because we could analyze what happens on specific dates to better understand the behaviour of stocks. Remember 2014 was a bad year for Amazon and Google, it would be interesting to investigate what went wrong then so we can better understand the determinants of the firm's value.
+
+## Distribution of returns.
+
+Although time series plots represent a useful tool for financial analysis, it is not the only way we can show stock returns. Density plots forget about time and show the distribution of values. The height (vertical axis) represents how frequent a given return (horizontal axis) is. This approach is useful when we are interested to know the most likely return that the stock can have, how unlikely is to expect determined return values, how risky a specific stock return is.
+
+Let's visualize a density plot for the FENG data.
+
+```{r}
+# Density plots.
+ggplot(FANG_monthly_returns, aes(x = monthly.returns, 
+                                 fill = symbol)) +
+  geom_density(alpha = 0.5) +
+  geom_hline(yintercept = 0, color = palette_light()[[1]]) +
+  labs(title = "FANG: Charting the Monthly Returns",
+       x = "Monthly Returns", y = "Density") + xlim(-0.3, 0.9) +
+    theme_tq() + scale_fill_tq()
+```
+
+Note that monthly returns around zero are frequent, whereas monthly returns above 50% are very infrequent. Apparently, this 50% value is red, so this should be the case of Facebook. It is also noteworthy to mention that Netflix has the higher monthly return dispersion of all. If this is not clear enough, we can add one line to the code to make it clearer.
+
+```{r}
+# Density plots.
+ggplot(FANG_monthly_returns, aes(x = monthly.returns, 
+                                 fill = symbol)) +
+  geom_density(alpha = 0.5) +
+  geom_hline(yintercept = 0, color = palette_light()[[1]]) +
+  labs(title = "FANG: Charting the Monthly Returns",
+       x = "Monthly Returns", y = "Density") + xlim(-0.3, 0.9) +
+  theme_tq() + scale_fill_tq() + facet_wrap(~ symbol, ncol = 2)
+```
+
+```{r PMF_E1 5}
+FANG_monthly_returns |>
+  mutate(year = as.factor(year(date))) |>
+  ggplot(aes(x = monthly.returns, fill = symbol)) +
+  geom_density(alpha = 0.5) +
+  geom_hline(yintercept = 0) +
+  labs(title = "FANG: Monthly return distribution per year.",
+       x = "Monthly returns", y = "Density") + xlim(-0.3, 0.6) +
+  theme_tq() + scale_fill_tq() + facet_wrap(~ year, ncol = 2)
+```
+
+```{r PMF_E1 6}
+FANG_monthly_returns |>
+  mutate(year = as.factor(year(date))) |>
+  filter(symbol == "NFLX") |>
+  ggplot(aes(x = monthly.returns, fill = year)) +
+  geom_density(alpha = 0.5) +
+  geom_hline(yintercept = 0) +
+  labs(title = "Netflix: Monthly returns per year.",
+       x = "Monthly returns", y = "Density") + xlim(-0.4, 0.9) +
+    theme_tq() + scale_fill_tq()
+```
+
+Now, we have one density plot for each stock. Let's analyze each plot.
+
+-   AMZN. Note the highest value is zero, this suggests that the most frequent return value is around zero. The majority of observations are within −25% and 25%, and there are only a very few returns higher than 25%.
+-   GOOG. As in the case of AMZN, the most frequent return value is around zero. Contrary to AMZN, there are no monthly returns higher than 25%. GOOG shows a less dispersed distribution so it is less risky than AMZN.
+-   FB. The highest value is slightly above zero, this means that the average return should be higher compared with AMZN and GOOG. However, FB exhibits a greater dispersion of returns as there are a few around 50%.
+-   NFLX. This is the most riskiest asset compared with the rest as the monthly returns have a wide dispersion.
+
+Density distributions are useful to have an idea about the overall risk and return of assets as they summarize 48 observations (in this case 12 observations per year, $12 \times 4$). Some may argue 48 observations are not enough to conduct a financial analysis, but we prefer to keep it simply for now.
+
+Now, let's propose some statistical indicators to complement our previous analysis.
+
+```{r}
+# Calculate relevant statistics.
+FANG_stats <- FANG_monthly_returns |>
+summarise(mean = mean(monthly.returns), sd = sd(monthly.returns), 
+          sr = mean/sd, iqr = IQR(monthly.returns))
+FANG_stats
+```
+
+The mean is basically a measure of an expected return of the stock. The stock with the lowest mean is GOOG and the highest is NFLX. This is consistent with our previous graphical analysis. GOOG expected return is very close to zero, whereas NFLX expected return is definitely higher as the highest value corresponds to a positive return. The standard deviation (sd) is a measure of how disperse are the returns or in financial terms, how risky are the returns. The stock with less risk is GOOG and the stock with highest risk is NFLX. This is also consistent with our previous graphical analysis. IQR is also a measure of risk although we are not going to discuss this one right now.
+
+Comparing return and risk, or mean and standard deviation of stock returns can be troublesome. This is because the relationship between risk and return is not perfectly proportional.
+
+Let's see the risk and return in a plot.
+
+```{r}
+# Mean variance plot.
+FANG_stats |>
+  ggplot(aes(x = sd, y = mean, color = symbol)) +
+  geom_point(size = 5) +
+  geom_text(aes(label = paste0(round(sr, 3))), 
+            vjust = 2, color = "black", size = 3.5) +
+  xlim(0.04, 0.18) + ylim(0.01, 0.06) +
+  labs(title = "The higher the risk, the higher the return",
+subtitle = "Numerical values represent return per unit of risk.",
+       x = "Risk", y = "Return") + theme_tq()
+```
+
+According to our results, Netflix is the stock with the highest return and risk. Does this mean Netflix has the highest return per unit of risk? This is easy to find out by dividing the mean by the standard deviation. This indicator is called $sr$ in the table above. According to this, Netflix has the highest return per unit of risk compared with the rest of the stocks. This is clearly consistent with our previous analysis of cumulative returns.
+
+The plot above measures returns in y-axis and risk in x-axes. In finance, we call this a mean-variance approach as mean is the measure of return and variance (or its square root the standard deviation) is the measure of risk. The mean-variance approach was a breakthrough in finance because we can clearly compare any kind of assets under the basis of risk and return.
+
+Imagine stock 1 has a return of 5% and a risk of 4%, whereas stock 2 has a return of 6% and a risk of 8%. Although stock 2 has a higher return, this return does not compensate for the increase in the risk. In particular stock 1 has a 1.25 return per unit of risk (5/4), and stock 2 has a 0.75 return per unit of risk. In this case, we would prefer to invest our money in stock 1. Again, the relative values are useful to make decisions. Here the relative value is stock return per unit of risk.
+
+Note how we can differentiate between a less risky and a riskier asset returns by looking at their correspondent distributions. Let's highlight these principles by using a brief example. Below we simulate a couple of asset returns by generating random values. Both artificially created assets have the same return (0%) and one is riskier than the other.
+
+```{r}
+# Create random assets.
+less_risky <- data.frame(length = rnorm(10000, 0, 1))
+more_risky <- data.frame(length = rnorm(10000, 0, 2))
+# Name random assets.
+less_risky$asset <- 'Less risky asset'
+more_risky$asset <- 'Riskier asset'
+assets <- rbind(less_risky, more_risky)
+# Plot the assets.
+ggplot(assets, aes(length, fill = asset)) + 
+  geom_density(alpha = 0.5, adjust = 3)
+```
+
+The risky asset can take a wider range of returns. In particular, the risky asset can take values ranging from (about) −7% to +7%, whereas the less risky asset about −3% to +3%. In the code above we ask R to generate 10,000 random values following a normal distribution with mean zero (return), and a standard deviation of 1% and 2% for the less and riskier asset respectively.

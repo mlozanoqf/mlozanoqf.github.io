@@ -1,0 +1,107 @@
+---
+title: ''
+output: pdf_document
+---
+
+# Introduction.
+
+The main objective of this document is to show and explain how to extract, visualize and analyze financial data in the context of asset pricing models, asset allocation models, a few financial econometrics techniques, and review some the most cutting edge technologies applications such as blockchain, using the powerful R programming language. Here, we are interested in explaining concepts and real-life applications by developing examples that start from the data extraction, the problem statement, the proposed solution and the evaluation of the solution. 
+
+We start by explaining what finance is about and why we require to incorporate a programming language as a way to conduct financial analysis. Any quantitative analysis requires gathering and manipulating data at some initial step, so we continue our journey by showing how to extract a wide variety of financial and economic information making special emphasis on stock market information and in data visualization. Then, we conduct some basic financial analysis based on the firm's financial statements and time series of firm's stock prices. Then, we move from analyzing prices to analyzing asset returns and we introduce the concept of financial risk. With these foundations, then we move into some asset pricing applications to understand what drives asset returns, we discuss the role of risk factors and how the estimation of asset pricing models can help us to make better financing and investment decisions. Given the relevance of future asset prices changes we also incorporate some foundations of asset prices forecast. Then, we introduce the portfolio analysis by showing how an investor could take informed decisions to optimize the performance of his or her investment portfolio, how to reduce risk by implementing diversification tools and financial algorithms, as well as evaluate investment strategies with the help of R. Finally, we review the concept of blockchain and illustrate how it works. For starters, this technology uses data elements encrypted in blocks of computer code. The blocks are chained together across a shared ledger through cryptology. If someone tries to hack the ledger, it is immediately known by the involved parties and the chain falls apart. Blockchain has the potential to reshape processes that are defined inside finance, primarily because of its cost and control benefits.
+
+
+## Finance.
+
+According to [@oecd2020oecd], developed and emerging countries and economies have become increasingly concerned about the level of financial literacy (ability to understand and properly apply financial management skills) of their citizens, including young people. This initially stemmed from concern about the potential impact of shrinking public and private welfare systems, shifting demographics, including the ageing of the population in many countries, and the increased sophistication and expansion of financial services. We all face financial decisions and we demand and offer financial services in this evolving context. As a result, financial literacy is now globally recognized as an essential life skill.
+
+We all have different interests and incentives to learn finance. For me, it is a way to better understand the world we are living in. In finance we mainly study financing and investment decisions under uncertainty. Financing decisions are about looking for funds whereas investment decisions are about assigning funds to run a project. Thus, financing and investment are basically two sides of the same coin called project, business idea, firm, financial asset, countries, etc. A business project is a series of inputs, outputs, investment plans and tasks that need to be completed in order to reach a specific expected outcome in the future. Projects are uncertain by nature because many things can go wrong in the future: a firm might go bankrupt, a business idea can be stolen, sales projections might not be as good as expected, plans could change because of coronavirus pandemic, and so on. This is why we say that financing and investment decisions are taken under uncertainty. Finance decisions are taken today, but their results are seen or realized in the uncertain future. Risky projects and uncertain projects are not necessarily bad projects as uncertainty and risk boost innovation, demands a high-quality quantitative analysis, represent opportunities for entrepreneurs, and returns for investors.
+
+An individual takes financing decisions in the job market, trying to get the maximum salary in the most convenient job to get the funds to pay for food, housing and leisure. This individual takes an investment decision when she decides to use her savings to start a small firm. If this firm performs well in the first year, then the firm will apply for a bank loan to finance a business expansion. Once the firm gets the new funds, the firm will have to invest this money wisely in productive assets, technology and hire experts in the relevant business field. As the firm generates profits, the owner who initially decided to risk her money will get returns. These returns may attract other investors willing to help the manager to export to other countries in exchange for some participation in the firm's profits. When we replicate this in the economy many times, it is easy to understand how good finance and investment decisions directly contribute to the economic growth and indirectly to the economic development.
+
+Finance can be applied by individuals and firms as illustrated above. Governments get funds from taxpayers to invest in public assets such as education, health, public infrastructure, etc. Governments also can contribute to create certainty about the stability of economic indicators and maintain a rule of law to stimulate private investment. If public spending remains higher than income, the country might fall into a public deficit and this could lead to financial instability which dampers not only public finances but personal and private investment decisions as well.
+
+Most finance decisions are taken based on a risk-return analysis. In particular, if after doing the corresponding maths and consulting with the pillow you conclude that the expected return is higher than the associated risk, then you will most likely go for it. On the other hand, if the risk looks quite high compared with the expected return, you will surely re-think or abandon the project. We, as individuals, perceive the risk and the return differently, we may have biases, and we might not be that rational all the time. Consider the following real example. For each of the past 17 years, the All-England Lawn Tennis Club has paid for an insurance policy to guard against losses if Wimbledon should have to be cancelled in the event of a worldwide pandemic. This was considered for some as an excessive cost, a foolish strategy, until recently. Wimbledon received about £114 million because 2020 tournament was cancelled due to the coronavirus. A similar thing happens when you buy a used car. Surely the buyer considers the car cheap enough, and the seller considers the car price expensive enough to close the deal. So, it is sometimes good to have some sort of different perspectives about prices, risk and returns as this allows commercial and financial transactions to exist. We also perceive risk and return differently as we use different methods, data and procedures to estimate risk and return.
+
+Although we all perceive risk and return differently by nature, we may also perceive the risk and return simply wrong by lack of knowledge. This is not uncommon as we may apply political decisions to finance problems, or make financial decisions without the relevant knowledge in the field, or ignoring the power of data analysis. Underestimating risks and overestimating returns may be as harmful as overestimating risk and underestimating returns. The first could lead to an excess of risk and the latter could lead to forego a good business. We are not suggesting everybody should become a finance expert, but finance professionals are expected to contribute to make better and correct financial decisions most of the times.
+
+Finance is not a pure exact area of knowledge, it borrows some principles of physics and mathematics to develop financial models.[^1] For instance, we are sure that at standard atmospheric pressure, water boils at approximately 100 degrees Celsius. But we do not know for sure whether my business profits will grow at 10% next year. Returns are uncertain, this is why we call them expected returns. In fact, after doing some financial analysis, I can estimate that my profits will grow in the range of 5% to 15%, this range shows how uncertain my profits are. This is why returns and risk are two main pillars in finance. The ability of understanding the economic conditions, the market, and the firm will determine the success of financing and investment decisions. This means that finance requires some knowledge of economics, statistics, math, accounting, probability, marketing, psychology, and data science to transform data into intelligent decisions.
+
+[^1]: The Black-Scholes formula for pricing European call and put options is one of the most famous equations in financial mathematics. See @scholes1973pricing and @merton1973theory. This equation is so important that Robert Merton and Myron Scholes received the 1997 Nobel Price for Economics in honour of their work. Unfortunately, Fischer Black, who clearly contributed extensive work to the formula, passed away in 1995. Interestingly, the Black-Scholes formula is basically a partial differential equation (PDE) well known in physics as the "heat equation" which describes the distribution of heat in a given region over time. Moreover, there are close parallels between random movements of particles in a fluid (called physical Brownian motion) and price fluctuations in financial markets (known as financial Brownian motion). Thus, finance seems to follow not only human behaviour but also some physics principles.
+
+As a financial economist, I consider finance an area within economics. The Journal of Economic Literature (JEL) classification system is used to classify articles, dissertations, books, book reviews, and working papers in EconLit, and in many other applications. The JEL classify finance as *financial economics* and includes:
+
+-   G00. Financial Crises.
+-   G1. General Financial Markets, Portfolio Choice, Investment Decisions, Asset Pricing, Trading Volume, Bond Interest Rates, Contingent Pricing, Futures Pricing, Information and Market Efficiency, Event Studies, Insider Trading, International Financial Markets, Financial Forecasting and Simulation, Government Policy and Regulation.
+-   G2. Financial Institutions and Services, Banks, Depository Institutions, Micro Finance Institutions, Mortgages, Insurance, Insurance Companies, Actuarial Studies, Non-bank Financial Institutions, Financial Instruments, Institutional Investors, Investment Banking, Venture Capital, Brokerage, Ratings and Ratings Agencies, Government Policy and Regulation.
+-   G3. Corporate Finance and Governance, Capital Budgeting, Fixed Investment and Inventory Studies, Capacity, Financing Policy, Financial Risk and Risk Management, Capital and Ownership Structure, Value of Firms, Goodwill, Bankruptcy, Liquidation, Mergers, Acquisitions, Restructuring, Corporate Governance, Payout Policy, Government Policy and Regulation.
+-   G4. Behavioral Finance, Role and Effects of Psychological, Emotional, Social, and Cognitive Factors on Decision Making in Financial Markets.
+-   G5. Household Finance, Household Saving, Borrowing, Debt, and Wealth, Insurance, Financial Literacy.
+
+In this tutorial we focus on only a few areas of finance: asset pricing, portfolio choice, financial forecasting, financial risk and risk management.
+
+## Commercial software.
+
+Every area of knowledge requires computers to conduct interesting analysis and applications. Traditionally, people use good commercials (and unfortunately expensive) software such as Microsoft Excel, SPSS, STATA, E-Views, and many others. These commercial software are good. However, you have to be aware that these programs are fully controlled by private firms who genuinely seek to create value for their shareholders, so there is no guarantee that their associated file formats could be readable in the future, or even exist in the future, which negatively impacts reproducibility. I never advise not to learn commercial software like the ones listed above; but I always encourage learning and use R (or Python) for serious data analysis. These computer languages are user-oriented and are created and constantly improved by a growing scientific community with an immense online presence to assist users.
+
+Commercial software products as the ones listed above are definitely important in the job market, but you also have to realize that the main interaction with these programs is by using the mouse to click on pre-defined, limited and inflexible menus. This kind of user-interaction is most of the times ephemeral and unrecorded, so that many of the choices made during a full quantitative procedure are frequently undocumented and this turns out to be highly problematic because there is no trace about how an analysis was conducted, and also because it becomes hard to propose an extension to the analysis in phases or replication in different contexts. Coding allows us to conduct and develop reproducible research. Learning how to code is equivalent as writing a cooking recipe and every time you click run you get the dish done. Although, chefs have to pay for ovens, kitchen items and even ingredients, while in finance most of our inputs are free data and the technology is also free as R is an open source software.
+
+Other commercial products in which you do not have to code like Microsoft Excel, SPSS, STATA, E-Views and many others, have high licensing fees and also rely on mysterious black boxes to produce a battery of results. These black boxes are problematic because the data comes in and the result comes out as magic, showing no details about the procedure followed to produce the final results, and the user could sadly get the wrong illusion that he or she understands data analysis. This might be convenient in some specific and limited cases but in others you miss the fun that represents having access to all the details of the computation and limit the extent to which you can customize or extend to innovative and create new improved applications. The general alternative to using a point-and-click program is to familiarize with languages like R which allows writing scripts to program algorithms for economic and financial analysis and visualizations.
+
+## R and RStudio.
+
+R is a language and environment for statistical computing and graphics. R is a powerful integrated suite of software facilities for data manipulation, calculation and graphical display. R is available as Free Software under the terms of the Free Software Foundation's GNU General Public License in source code form. It compiles and runs on a wide variety of UNIX platforms and similar systems (including FreeBSD and Linux), Windows and MacOS. Given its popularity and flexibility, R is currently implemented in virtually all areas of knowledge including finance by students, practitioners, researchers, universities, institutions, firms, think tanks, and policy makers around the world.
+
+Many users think of R as a statistics system. We prefer to think of it as an environment within which statistical techniques are implemented. This is why R is a popular choice for finance and economic modeling. R can be extended (easily) via packages as we will show in this tutorial. There are about eight default packages supplied with the R distribution and many more are available through the CRAN family of Internet sites covering a very wide range of modern statistics, data science and finance applications.
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+# This removes all items in environment. 
+rm(list=ls())
+library(tictoc)
+tic()
+```
+
+Let's see how many packages are there as today using R code.
+
+```{r}
+# The function is available.packages and we store the result 
+# in R_packages variable. 
+R_packages <- available.packages(filters = "duplicates",
+                                 repos="https://cran.rstudio.com")
+# Now, we combine paste and print functions to produce a sentence.
+# Note that nrow simply counts the number of rows in R_packages.
+print(paste("There are", nrow(R_packages), "R packages available in CRAN as of", 
+            Sys.Date()))
+```
+
+Every R package has its own PDF online documentation and there are many online examples developed by users as well. My recommendation here in case you have a question about this is Google it. Many times, we do not know how to deal with an error message, and we can find our way out by Google it. I have been using R, Matlab, Python, Octave and other languages for the last 15 years and I can confirm every time I do not know how to code something in R, I can easily find a solution online either in specialized discussion forums, official documentation, or in YouTube videos and tutorials. You also have several online and free resources in the course syllabus, and you can always ask me for help.
+
+R offers numerous advantages for data analysis compared with other alternatives like Microsoft Excel. R is free; it is easy to do reproducible research (self-documenting, repeatable); it is scalable (applicable to small or large problems); there is a big and growing R online community by discipline and by region (including R-Ladies groups); Stack Overflow; plenty of learning resources (quantity and quality); many R books and resources (see the reference list at the end of this tutorial). Finally, R is 'becoming' the new norm in data science and specifically in finance analysis. Even if you are interested in other languages like Python, at the end learning one language can help you to understand others. Microsoft Excel is a great tool and we are expected to learn and use it very well, but it is not the best alternative for data analysis.
+
+While some people find the use of a commandline environment for coding daunting, it is becoming a necessary skill for managers, management analysts, and data scientists as the volume and variety of data has grown. Thus, scripting or programming has become a third language for modern professionals, in addition to their native language, and discipline specific terminology.
+
+Below is the way we show R code and R output throughout this tutorial.
+
+```{r}
+# We write comments in italics. The R code looks like this:
+print("hello world")
+```
+
+The output of the R code above is a string text: \texttt{hello world}. The R function \texttt{print} prints in the screen the quoted string in parenthesis. We will use a number of R functions to illustrate finance applications and examples. Nobody expects you to memorize each function and its syntax as you can always access R documentation to help you out with R functions syntax and even examples. This is done by typing \texttt{?print} in the console. You will see a right panel with the corresponding help. This is part of the help documentation when you type \texttt{?print}:
+
+Print Values. Description. \texttt{print} prints its argument and returns it invisibly (via invisible(x)). It is a generic function which means that new printing methods can be easily added for new classes. Usage. \texttt{print(x, ...)}
+
+Now, a simple numerical example to show R code and R output.
+
+```{r}
+# Define the value of a.
+a <- 2 + 2
+# Print the value of a.
+print(a)
+# Or simply.
+a
+```
+
+So, \texttt{a} is equal to 4. Of course, R is more than a Fisher-Price calculator. But it is always useful to see simple examples first.
+
+In the following sections, we show and explain examples that the participants can replicate for their own purposes and interests. In particular, we expect the participants to "copy - paste - edit - review" the structure of the code to replicate some analysis on their own. For example, imagine you are interested in producing a variable \texttt{b} that contains the result of $3+3$. Given the previous example, you know you can do this by typing $b = 3 + 3$. A variable \texttt{c} which is the product of \texttt{a} and \texttt{b} is then $c = a \times b$. You will soon realize that there are many ways in which we can define \texttt{c}. An alternative is $c = (2+2) * b$, or $c = a * (3+3)$, $c = (2+2) * (3+3)$, and even $c = 4 * 6$. This means that there are many equivalent ways to do one task.
