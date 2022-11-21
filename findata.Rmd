@@ -1,6 +1,8 @@
 ---
 title: ''
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
 ---
 
 # Financial data.
@@ -23,7 +25,7 @@ If you are interested in working with financial statements, you should look for 
 
 ```{r}
 # Load the finreportr package to download financial reports.
-library(finreportr)
+
 # Load the tidyquant package to manipulate the data and more.
 library(tidyquant)
 library(dplyr)
@@ -32,21 +34,23 @@ library(tidyr)
 
 Let's analyze Facebook.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 FB.Info <- CompanyInfo("FB")
 print(FB.Info)
 ```
 
 This is the physical address of the firm. Now some information about Facebook's annual reports.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
+
 FB.reports <- AnnualReports("FB")
 FB.reports$accession.no
 ```
 
 These are keys to name specific financial reports. You can Google one of those keys above and see the kind of information available at SEC website. Now, let's download a balance sheet.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
+
 # Store the balance sheet of Facebook (FB) in BS_FB.
 BS_FB <- GetBalanceSheet("FB", 2018)
 # Show the value in the screen (in paper).
@@ -57,7 +61,8 @@ We are done. We have the balance sheet information of Facebook in \texttt{BS\_FB
 
 Let's review how we can manipulate \texttt{BS\_FB} contents to get a more readable result. Balance sheets are annual, so we do not need the *startDate* column, and we know it is expressed in US dollars, so we do not need the *Units* column as well. Imagine we are interested in a clear version of the 2017 balance sheet.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
+
 # First make a copy.
 BS_2017 <- BS_FB |>
   # convert Amount from character to numeric.
@@ -80,7 +85,8 @@ In plain English the balance sheet shows the value of what the firm has to produ
 
 Let's extract the 2016 and 2017 balance sheets and show the most relevant rows to verify how the accounting equation holds.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
+
 # Define the accounts we need in our balance sheet summary.
 accounts <- c("Assets" , "Liabilities", 
               "Stockholders' Equity Attributable to Parent", 
@@ -110,7 +116,8 @@ Looking at the USD values is difficult to have a gasp about which balance sheet 
 
 Let's propose a different way to see the balance sheet statement.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
+
 # First we make a copy.
 BS_2016_2017_change <- BS_2016_2017_summary |>
   # Calculate the percentage change from 2016 to 2017.
@@ -121,7 +128,8 @@ BS_2016_2017_change
 
 Liabilities increased more than twice compared with assets from 2016 to 2017. Should we be worried about Facebook financial health? One simple way to dig deeper into this issue is to show an alternative balance sheet showing the accounts as relative proportions with respect to the assets.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
+
 # Create a copy of the summary.
 BS_2016_2017_prop <- BS_2016_2017_summary |>
   # Proportions with respect to the assets (2016).
@@ -136,7 +144,8 @@ We are now less worried about the financial health of Facebook. Even though the 
 
 Let's plot.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
+
 accounts_BS <- c("Assets" , "Liabilities", 
               "Stockholders' Equity Attributable to Parent")
 
@@ -157,7 +166,8 @@ BS_2016_2017_plot
 
 Having the data as in \texttt{BS\_2016\_2017\_plot} makes it easier to use \texttt{ggplot}.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
+
 library(ggplot2)
 g <- ggplot(BS_2016_2017_plot, 
             aes(Metric, Amount, fill = Amount)) +
@@ -182,7 +192,8 @@ Imagine all balance sheet accounts increased as in the case of Facebook, but the
 
 Let's download the income statement and show only the revenues and profit for 2016 and 2017. Note that the process in R is basically the same as in the case of the balance sheet before. This is important as coding allows us to replicate or reproduce the analysis easily. As the process was recorded in the balance sheet, it is only a matter of adapting the same instructions to perform a similar manipulation for the income statement. You might see several lines of code but in reality, it is almost a copy-paste from the previous code. In fact, we are using the comments to emphasize that this code is not new, and is basically a copy of our previous procedure.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
+
 # Define accounts just as we did before for the balance sheet.
 accounts_IS <- c("Revenues" , 
   "Net Income (Loss) Available to Common Stockholders, Basic")
@@ -225,7 +236,8 @@ Now we have the relevant information we need. The profits increased more than 50
 
 We normally are interested in making these calculations automatically, without copying the values and taking them directly from the correspondent variables:
 
-```{r}
+```{r eval=FALSE, include=FALSE}
+
 BS_2016_2017_summary[1,2] / IS_2016_2017_summary[2,2]
 BS_2016_2017_summary[1,3] / IS_2016_2017_summary[2,3]
 ```
@@ -234,7 +246,8 @@ $AP_{2016}$ and $AP_{2017}$ represent the ratio of assets and profits for 2016 a
 
 Let's calculate the revenues with respect to profits.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
+
 # Make a copy.
 IS_2016_2017_prop <- IS_2016_2017_summary |>
   # Calculate proportion (2016).
@@ -249,7 +262,8 @@ According to this ratio, in 2016 the firm transformed 2.7 USD of sales into 1 US
 
 Let's plot the income statement basics. First, some necessary changes.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
+
 IS_2016_2017_plot <- IS_FB |>
   mutate(Amount = as.numeric(Amount)) |>
   mutate(Date = as.Date(endDate)) |>
@@ -264,7 +278,8 @@ IS_2016_2017_plot
 
 Now, a nice plot.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
+
 library(ggplot2)
 g <- ggplot(IS_2016_2017_plot, 
             aes(Metric, Amount, fill = Amount)) +
@@ -576,7 +591,7 @@ exchange_rate <- getSymbols("USD/MXN", src = "oanda",
 plot(exchange_rate)
 ```
 
-```{r PMF_EF}
+```{r PMF_EFa}
 exchange_rate <- as.data.frame(exchange_rate)
 plot(lag(exchange_rate$USD.MXN), exchange_rate$USD.MXN)
 ex <- lm(exchange_rate$USD.MXN ~ lag(exchange_rate$USD.MXN))
@@ -591,7 +606,7 @@ ex_new <- data.frame(ch_ex, exchange_rate$USD.MXN)
 ex_new[ex_new$USD.MXN>0.01 | ex_new$USD.MXN < -0.01,]
 ```
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 exchange_rate <- getSymbols("USD/MXN", src = "oanda", auto.assign = FALSE)
 exchange <- data.frame(exchange_rate)
 R_USDMXN <- exchange |> 
@@ -601,12 +616,12 @@ subset(R_USDMXN, USD.MXN_returns > 0.01 | USD.MXN_returns < -0.01)
 ```
 
 
-```{r PMF_E1 3}
+```{r eval=FALSE, include=FALSE}
 exchange_rate <- getSymbols("USD/MXN", src = "oanda", auto.assign = FALSE)
 sum(exchange_rate > 20.6) / length(exchange_rate)
 ```
 
-```{r PMF_E1 4}
+```{r eval=FALSE, include=FALSE}
 exchange_rate <- getSymbols("USD/MXN", src = "oanda", auto.assign = FALSE)
 exchange_rate[which.max(exchange_rate)]
 exchange_rate[which.min(exchange_rate)]
@@ -614,7 +629,7 @@ exchange_rate[which.min(exchange_rate)]
 
 Here, 1 USD equals `r last(exchange_rate)` MXN as `r Sys.Date()`. We can show the time series information into a density plot.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 # Density plots.
 ggplot(exchange_rate, aes(x = USD.MXN, fill = "")) +
   geom_density(alpha = 0.8) +

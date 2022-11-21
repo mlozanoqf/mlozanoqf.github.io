@@ -1,0 +1,93 @@
+---
+title: "**\\Huge Financial modeling in R. \\vspace{20 mm}   \n \\fontsize{100}{100}\\faLaptopCode  \\vspace{20 mm}  \n\\Huge Dr. Martín Lozano.**"
+author:
+- \faEnvelope \hspace{1 mm} \texttt{<mlozanoqf@gmail.com>}
+- \faAddressCard \hspace{1 mm} \texttt{https://sites.google.com/site/mlozanoqf/}
+- \faGithub \hspace{1 mm} \texttt{https://github.com/mlozanoqf/}
+date: "\\faClock \\hspace{1 mm} `r format(Sys.time(), '%B %d, %Y. %H:%M:%S')`"
+output:
+  html_document:
+    df_print: paged
+  word_document: default
+  html_notebook: default
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: yes
+    citation_package: natbib
+#toc: yes
+bibliography: mybibfile.bib
+fontsize: 12pt
+header-includes:
+- \usepackage{placeins}
+- \usepackage{setspace}
+- \usepackage{chngcntr}
+- \onehalfspacing
+- \counterwithin{figure}{subsection}
+- \counterwithin{table}{subsection}
+- \usepackage[nottoc]{tocbibind}
+- \usepackage{fontawesome5}
+#subtitle: An introductory approach of quantitative finance.
+abstract: This is an introductory applied tutorial suitable for undergraduate students interested in the area of quantitative finance modeling. The main objective is to show how to analyze financial data and extract basic insights from financial models using the powerful R programming language. We extend examples and codes freely available in Internet, and some of my own. As in the philosophy of Donald Knuth [@knuth1984literate], the objective of this document is to explain to human beings what we want a computer to do as literate programming. This is a work in progress and it is under revision.
+---
+
+------------------------------------------------------------------------
+```{=tex}
+\newpage 
+\hypersetup{linkcolor=black}
+\renewcommand*\contentsname{Index.}
+\tableofcontents
+```
+
+
+\newpage
+
+```{r Introduction, child = 'intro.Rmd'}
+```
+
+\newpage
+
+```{r FinancialData, child = 'findata.Rmd'}
+```
+
+\newpage
+
+```{r AssetReturns, child = 'assetret.Rmd'}
+```
+
+\newpage
+
+#```{r AssetPricing, child = 'assetpricing.Rmd'}
+#```
+
+\newpage
+
+#```{r AssetAllocation, child = 'assetallocation.Rmd'}
+#```
+
+
+\newpage
+
+#```{r DatavizMultilevel, child = 'multilevel.Rmd'}
+#```
+
+\newpage
+
+#```{r Blockchain, child = 'blockchain.Rmd'}
+#```
+
+# Conclusion.
+
+Finance is not about how to make money; it is about much more than that. Finance is about how to find and use resources, and how to assign them into projects. This is not an easy task as resources are limited and projects are risky. Moreover, sometimes the financial markets do not work well: bad projects are financed and good projects are not. However, if we rely on finance theory, quantitative models, and data analysis, we increase the chances to make good and informed decisions. Making money is a necessary step that allows us to pursue superior objectives like making firms growth, create better jobs, stimulate innovation, economic growth, and hopefully improve the standard of living of the population.
+
+We have made some progress at implementing financial and economic models to achieve these superior objectives but we cannot say we have succeeded. Poverty levels in some countries are high, and income inequality leads not only to economic but also social problems. Fortunately, there is an increasing and genuine interest in learning finance principles by good people around the world.
+
+```{r include=FALSE}
+a <- toc()
+```
+
+This document took `r as.numeric(a$toc-a$tic)` seconds to compile in Rmarkdown.
+
+
+\newpage
+
+# References.
