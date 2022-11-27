@@ -3,7 +3,7 @@ title: Quantitative finance with R.
 author:
    - name: Dr. Martín Lozano.
      affiliation: https://sites.google.com/site/mlozanoqf/
-     email: martin.lozano@udem.edu
+#     email: martin.lozano@udem.edu
 #   - name: Jack, the Supposed Contributor
 #     affiliation: Living Room Couch
 date: "\\faClock \\hspace{1 mm} Last compiled on: `r format(Sys.time(), '%d/%m/%Y, %H:%M:%S.')`"
@@ -23,8 +23,3 @@ output:
 # Credit risk.
 
 https://mlozanoqf.github.io/tutorial_arf/
-
-## asdasd
-asdasdasd
-
-# Other.
