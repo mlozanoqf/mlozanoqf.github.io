@@ -1,13 +1,14 @@
 ---
-title: Quantitative finance with R.
+title: Dr. Martín Lozano.
+subtitle: Quantitative finance with R.
 author:
-   - name: Dr. Martín Lozano.
-     affiliation: https://sites.google.com/site/mlozanoqf/
+   - name: Contact. [Google Sites.](https://sites.google.com/site/mlozanoqf/)
+#     affiliation: https://sites.google.com/site/mlozanoqf/
 #     email: martin.lozano@udem.edu
 #   - name: Jack, the Supposed Contributor
 #     affiliation: Living Room Couch
 date: "\\faClock \\hspace{1 mm} Last compiled on: `r format(Sys.time(), '%d/%m/%Y, %H:%M:%S.')`"
-abstract: As in the philosophy of Donald Knuth, the objective of this document is to explain to human beings what we want a computer to do as literate programming. This is a work in progress and it is under revision.
+#abstract: As in the philosophy of Donald Knuth, the objective of this document is to explain to human beings what we want a computer to do as literate programming. This is a work in progress and it is under revision.
 output:
   html_document:
     toc: true
