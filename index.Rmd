@@ -24,3 +24,7 @@ output:
 # Credit risk.
 
 https://mlozanoqf.github.io/tutorial_arf/
+
+# Econometrics and machine learning.
+
+https://mlozanoqf.github.io/tutorial_emf/
