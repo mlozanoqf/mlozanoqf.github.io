@@ -21,10 +21,10 @@ output:
       after_body: analytics.html
 ---
 
-# Credit risk.
+# Credit risk with R.
 
 https://mlozanoqf.github.io/tutorial_arf/
 
-# Econometrics and machine learning.
+# Machine learning versus traditional forecasting methods.
 
 https://mlozanoqf.github.io/tutorial_emf/
