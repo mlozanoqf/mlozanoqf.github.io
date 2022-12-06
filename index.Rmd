@@ -1,6 +1,6 @@
 ---
-title: Dr. Martín Lozano.
-subtitle: Quantitative finance with R.
+title: Quantitative finance with R.
+subtitle: Dr. Martín Lozano.
 #author:
 #   - name: Contact. [Google Sites.](https://sites.google.com/site/mlozanoqf/)
 #     affiliation: https://sites.google.com/site/mlozanoqf/
