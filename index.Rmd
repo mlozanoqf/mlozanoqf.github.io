@@ -16,16 +16,21 @@ output:
     toc_depth: 2
     number_sections: true
     code_folding: hide
+ #   code_download: TRUE
     theme: readable
     includes:
       after_body: analytics.html
 ---
 
+```{css, echo = FALSE}
+h1, h2 {
+  font-size: 4;
+  color: black; 
+}
+```
 
-# Credit risk.
+# Credit risk. 
+**[Click here.](https://mlozanoqf.github.io/tutorial_arf/)**
 
-https://mlozanoqf.github.io/tutorial_arf/
-
-# Forecasting.
-
-https://mlozanoqf.github.io/tutorial_emf/
+# Forecasting. 
+**[Click here.](https://mlozanoqf.github.io/tutorial_emf/)**
