@@ -22,6 +22,12 @@ output:
       after_body: analytics.html
 ---
 
+
+```{r load_packages, message=FALSE, warning=FALSE, include=FALSE} 
+library(fontawesome)
+```
+
+
 ```{r, xaringanExtra-clipboard, echo=FALSE}
 htmltools::tagList(
   xaringanExtra::use_clipboard(
@@ -39,8 +45,6 @@ htmltools::tagList(
 <!--   color: black;  -->
 <!-- } -->
 
-# Credit risk. 
-**[Click here.](https://mlozanoqf.github.io/tutorial_arf/)**
+# Credit risk [`r fa("credit-card")`](https://mlozanoqf.github.io/tutorial_arf/)
 
-# Forecasting. 
-**[Click here.](https://mlozanoqf.github.io/tutorial_emf/)**
+# Forecasting [`r fa("chart-line")`](https://mlozanoqf.github.io/tutorial_emf/)
