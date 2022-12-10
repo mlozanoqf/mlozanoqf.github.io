@@ -50,3 +50,6 @@ htmltools::tagList(
 # Forecasting [`r fa("chart-line")`](https://mlozanoqf.github.io/tutorial_emf/)
 
 # Options and VaR [`r fa("cogs")`](https://mlozanoqf.github.io/tutorial_if/)
+
+# Financial modeling [`r fa("laptop-code")`](https://mlozanoqf.github.io/tutorial_pmf/)
+
