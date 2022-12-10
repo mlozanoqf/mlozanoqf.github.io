@@ -48,3 +48,5 @@ htmltools::tagList(
 # Credit risk [`r fa("credit-card")`](https://mlozanoqf.github.io/tutorial_arf/)
 
 # Forecasting [`r fa("chart-line")`](https://mlozanoqf.github.io/tutorial_emf/)
+
+# Options and VaR [`r fa("cogs")`](https://mlozanoqf.github.io/tutorial_if/)
