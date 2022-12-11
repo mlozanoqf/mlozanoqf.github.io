@@ -1,5 +1,7 @@
 ---
 title: Quantitative finance with R (QFR).
+#title: "**\\Huge Quantitative finance with R (QFR). \\vspace{20 mm}   \n \\fontsize{100}{100}\\faLaptopCode  \\vspace{20 mm}  \n\\Huge Dr. Martín Lozano.**"
+
 subtitle: Dr. Martín Lozano.
 #author:
 #   - name: Contact. [Google Sites.](https://sites.google.com/site/mlozanoqf/)
@@ -44,6 +46,7 @@ htmltools::tagList(
 <!--   font-size: 4; -->
 <!--   color: black;  -->
 <!-- } -->
+
 
 # Credit risk [`r fa("credit-card")`](https://mlozanoqf.github.io/tutorial_arf/)
 
