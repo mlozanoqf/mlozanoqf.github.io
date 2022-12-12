@@ -41,12 +41,10 @@ htmltools::tagList(
 )
 ```
 
+---
 
-<!-- h1, h2 { -->
-<!--   font-size: 4; -->
-<!--   color: black;  -->
-<!-- } -->
 
+# Contents: {-}
 
 # Credit risk [`r fa("credit-card")`](https://mlozanoqf.github.io/tutorial_arf/)
 
