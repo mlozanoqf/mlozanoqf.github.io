@@ -1,5 +1,5 @@
 ---
-title: Quantitative finance with R (QFR).
+title: Quantitative finance with `r fontawesome::fa("r-project")`
 #title: "**\\Huge Quantitative finance with R (QFR). \\vspace{20 mm}   \n \\fontsize{100}{100}\\faLaptopCode  \\vspace{20 mm}  \n\\Huge Dr. Martín Lozano.**"
 
 subtitle: Dr. Martín Lozano.
@@ -22,6 +22,8 @@ output:
     theme: readable
     includes:
       after_body: analytics.html
+header-includes:
+- \usepackage{fontawesome}
 ---
 
 
@@ -41,7 +43,11 @@ htmltools::tagList(
 )
 ```
 
----
+````{=html}
+```{r, echo=FALSE, results='asis'}
+xfun::file_string('analytics2.html')
+```
+````
 
 
 # Contents: {-}
