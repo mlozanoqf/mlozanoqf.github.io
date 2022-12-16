@@ -17,7 +17,7 @@ output:
     #toc_float: true
     toc_depth: 2
     number_sections: true
-    code_folding: hide
+    #code_folding: hide
  #   code_download: TRUE
     theme: readable
     includes:
@@ -45,7 +45,7 @@ htmltools::tagList(
 
 ````{=html}
 ```{r, echo=FALSE, results='asis'}
-xfun::file_string('analytics2.html')
+xfun::file_string('contact.html')
 ```
 ````
 
