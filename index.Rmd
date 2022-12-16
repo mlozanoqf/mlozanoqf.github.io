@@ -13,8 +13,8 @@ date: "\\faClock \\hspace{1 mm} Current commit: `r format(Sys.time(), '%d/%m/%Y,
 #abstract: As in the philosophy of Donald Knuth, the objective of this document is to explain to human beings what we want a computer to do as literate programming. This is a work in progress and it is under revision.
 output:
   html_document:
-    toc: true
-    toc_float: true
+    #toc: true
+    #toc_float: true
     toc_depth: 2
     number_sections: true
     code_folding: hide
