@@ -51,11 +51,10 @@ xfun::file_string('contact.html')
 
 # Contents: {-}
 
-# [Credit risk](https://mlozanoqf.github.io/tutorial_arf/) [`r fa("credit-card", fill = "black")`](https://mlozanoqf.github.io/tutorial_arf/)
+# [<span style="color: black">Credit risk</span>](https://mlozanoqf.github.io/tutorial_arf/) [`r fa("credit-card", fill = "black")`](https://mlozanoqf.github.io/tutorial_arf/)
 
-# [Forecasting](https://mlozanoqf.github.io/tutorial_emf/) [`r fa("chart-line", fill = "black")`](https://mlozanoqf.github.io/tutorial_emf/)
+# [<span style="color: black">Forecasting</span>](https://mlozanoqf.github.io/tutorial_emf/) [`r fa("chart-line", fill = "black")`](https://mlozanoqf.github.io/tutorial_emf/)
 
-# [Options and VaR](https://mlozanoqf.github.io/tutorial_if/) [`r fa("cogs", fill = "black")`](https://mlozanoqf.github.io/tutorial_if/)
+# [<span style="color: black">Options and VaR</span>](https://mlozanoqf.github.io/tutorial_if/) [`r fa("cogs", fill = "black")`](https://mlozanoqf.github.io/tutorial_if/)
 
-# [Financial modeling](https://mlozanoqf.github.io/tutorial_pmf/) [`r fa("laptop-code", fill = "black")`](https://mlozanoqf.github.io/tutorial_pmf/)
-
+# [<span style="color: black">Financial modeling</span>](https://mlozanoqf.github.io/tutorial_pmf/) [`r fa("laptop-code", fill = "black")`](https://mlozanoqf.github.io/tutorial_pmf/)
