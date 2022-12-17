@@ -1,6 +1,6 @@
 ---
 title: Quantitative finance with `r fontawesome::fa("r-project")` <span style="color:white">R</span>
-#title: "**\\Huge Quantitative finance with R (QFR). \\vspace{20 mm}   \n \\fontsize{100}{100}\\faLaptopCode  \\vspace{20 mm}  \n\\Huge Dr. Martín Lozano.**"
+#title: "**\\Huge Quantitative finance with R (QFR). c  \n \\fontsize{100}{100}\\faLaptopCode  \\vspace{20 mm}  \n\\Huge Dr. Martín Lozano.**"
 
 subtitle: Dr. Martín Lozano.
 #author:
@@ -9,7 +9,7 @@ subtitle: Dr. Martín Lozano.
 #     email: martin.lozano@udem.edu
 #   - name: Jack, the Supposed Contributor
 #     affiliation: Living Room Couch
-date: "\\faClock \\hspace{1 mm} Current commit: `r format(Sys.time(), '%d/%m/%Y, %H:%M:%S.')`"
+date: Current `r fontawesome::fa("code-branch") ` `r format(Sys.time(), '%d %b %Y, %H:%M:%S.')`
 #abstract: As in the philosophy of Donald Knuth, the objective of this document is to explain to human beings what we want a computer to do as literate programming. This is a work in progress and it is under revision.
 output:
   html_document:
@@ -52,11 +52,11 @@ xfun::file_string('contact.html')
 
 # Contents: {-}
 
-# Credit risk [`r fa("credit-card")`](https://mlozanoqf.github.io/tutorial_arf/)
+# [Credit risk](https://mlozanoqf.github.io/tutorial_arf/) [`r fa("credit-card", fill = "black")`](https://mlozanoqf.github.io/tutorial_arf/)
 
-# Forecasting [`r fa("chart-line")`](https://mlozanoqf.github.io/tutorial_emf/)
+# [Forecasting](https://mlozanoqf.github.io/tutorial_emf/) [`r fa("chart-line", fill = "black")`](https://mlozanoqf.github.io/tutorial_emf/)
 
-# Options and VaR [`r fa("cogs")`](https://mlozanoqf.github.io/tutorial_if/)
+# [Options and VaR](https://mlozanoqf.github.io/tutorial_if/) [`r fa("cogs", fill = "black")`](https://mlozanoqf.github.io/tutorial_if/)
 
-# Financial modeling [`r fa("laptop-code")`](https://mlozanoqf.github.io/tutorial_pmf/)
+# [Financial modeling](https://mlozanoqf.github.io/tutorial_pmf/) [`r fa("laptop-code", fill = "black")`](https://mlozanoqf.github.io/tutorial_pmf/)
 
