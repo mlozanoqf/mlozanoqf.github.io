@@ -58,3 +58,5 @@ xfun::file_string('contact.html')
 # [<span style="color: black">Options and VaR</span>](https://mlozanoqf.github.io/tutorial_if/) [`r fa("cogs", fill = "black")`](https://mlozanoqf.github.io/tutorial_if/)
 
 # [<span style="color: black">Financial modeling</span>](https://mlozanoqf.github.io/tutorial_pmf/) [`r fa("laptop-code", fill = "black")`](https://mlozanoqf.github.io/tutorial_pmf/)
+
+# [<span style="color: black">Supervision guide</span>](https://mlozanoqf.github.io/supervision/) [`r fa("graduation-cap", fill = "black")`](https://mlozanoqf.github.io/supervision/)
