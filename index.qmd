@@ -1,0 +1,40 @@
+
+
+```{r include=FALSE}
+# This removes all items in environment. 
+# It is a good practice to start your code this way.
+rm(list=ls())
+library(fontawesome)
+library(tictoc)
+tic()
+```
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
+```
+
+
+````{=html}
+```{r, echo=FALSE, results='asis'}
+xfun::file_string('contact.html')
+```
+````
+
+
+# <span style="color: black">Contents:</span> {-}
+
+# [<span style="color: black">Credit risk.</span>](https://mlozanoqf.github.io/tutorial_arf/) 
+<!-- [`r fa("credit-card", fill = "black")`](https://mlozanoqf.github.io/tutorial_arf/) -->
+
+# [<span style="color: black">Forecasting.</span>](https://mlozanoqf.github.io/tutorial_emf/) 
+<!-- [`r fa("chart-line", fill = "black")`](https://mlozanoqf.github.io/tutorial_emf/) -->
+
+# [<span style="color: black">Options and VaR.</span>](https://mlozanoqf.github.io/tutorial_if/) 
+<!-- [`r fa("cogs", fill = "black")`](https://mlozanoqf.github.io/tutorial_if/) -->
+
+# [<span style="color: black">Financial modeling.</span>](https://mlozanoqf.github.io/tutorial_pmf/) 
+<!-- [`r fa("laptop-code", fill = "black")`](https://mlozanoqf.github.io/tutorial_pmf/) -->
+
+# [<span style="color: black">Supervision guide.</span>](https://mlozanoqf.github.io/supervision/) 
+<!-- [`r fa("graduation-cap", fill = "black")`](https://mlozanoqf.github.io/supervision/) -->
