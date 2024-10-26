@@ -21,7 +21,7 @@ xfun::file_string('contact.html')
 ```
 ````
 
-![](p25.mp4){.absolute left="0" top="250" height="250" loop="true"}
+<!-- ![](p25.mp4){.absolute left="0" top="250" height="250" loop="true"} -->
 
 # <span style="color: black">Contents:</span> {-}
 
