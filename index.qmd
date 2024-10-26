@@ -40,4 +40,6 @@ xfun::file_string('contact.html')
 # [<span style="color: black">Supervision guide.</span>](https://mlozanoqf.github.io/supervision/) 
 <!-- [`r fa("graduation-cap", fill = "black")`](https://mlozanoqf.github.io/supervision/) -->
 
+# [<span style="color: black">Essays (Spanish).</span>](https://mlozanoqf.github.io/ensayos/) 
+
 # [<span style="color: black">My curriculum vitae.</span>](https://mlozanoqf.github.io/resume/) 
