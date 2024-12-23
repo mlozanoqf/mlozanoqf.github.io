@@ -1,5 +1,5 @@
 title: Quantitative finance with {{< fa brands r-project >}} <span style="color:white">R</span>
-subtitle: Dr. Martín Lozano.
+subtitle: Dr. Martín Lozano <tt>`<martin.lozano@udem.edu>`</tt>
 #author: Dr. Martín Lozano.
 date-modified: now
 date-format: "MMMM D, YYYY, HH:mm:ss a."
