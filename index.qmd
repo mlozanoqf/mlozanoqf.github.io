@@ -37,6 +37,9 @@ xfun::file_string('contact.html')
 # [<span style="color: black">Financial modeling.</span>](https://mlozanoqf.github.io/tutorial_pmf/) 
 <!-- [`r fa("laptop-code", fill = "black")`](https://mlozanoqf.github.io/tutorial_pmf/) -->
 
+# [<span style="color: black">European options strategy analyzer (App).</span>](https://mlozanoqf.shinyapps.io/opstr/) 
+<!-- [`r fa("laptop-code", fill = "black")`](https://mlozanoqf.shinyapps.io/opstr/) -->
+
 # [<span style="color: black">Supervision guide.</span>](https://mlozanoqf.github.io/supervision/) 
 <!-- [`r fa("graduation-cap", fill = "black")`](https://mlozanoqf.github.io/supervision/) -->
 
