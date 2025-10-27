@@ -25,24 +25,19 @@ xfun::file_string('contact.html')
 
 # <span style="color: black">Contents:</span> {-}
 
-# [<span style="color: black">Credit risk.</span>](https://mlozanoqf.github.io/tutorial_arf/) 
+- [<span style="color: black">Credit risk.</span>](https://mlozanoqf.github.io/tutorial_arf/) 
 <!-- [`r fa("credit-card", fill = "black")`](https://mlozanoqf.github.io/tutorial_arf/) -->
-
-# [<span style="color: black">Forecasting.</span>](https://mlozanoqf.github.io/tutorial_emf/) 
+- [<span style="color: black">Forecasting.</span>](https://mlozanoqf.github.io/tutorial_emf/) 
 <!-- [`r fa("chart-line", fill = "black")`](https://mlozanoqf.github.io/tutorial_emf/) -->
-
-# [<span style="color: black">Options and VaR.</span>](https://mlozanoqf.github.io/tutorial_if/) 
+- [<span style="color: black">Options and VaR.</span>](https://mlozanoqf.github.io/tutorial_if/) 
 <!-- [`r fa("cogs", fill = "black")`](https://mlozanoqf.github.io/tutorial_if/) -->
-
-# [<span style="color: black">Financial modeling.</span>](https://mlozanoqf.github.io/tutorial_pmf/) 
+- [<span style="color: black">Financial modeling.</span>](https://mlozanoqf.github.io/tutorial_pmf/) 
 <!-- [`r fa("laptop-code", fill = "black")`](https://mlozanoqf.github.io/tutorial_pmf/) -->
-
-# [<span style="color: black">European options strategy analyzer (App).</span>](https://mlozanoqf.shinyapps.io/opstr/) 
+- [<span style="color: black">European options strategy analyzer (App).</span>](https://mlozanoqf.shinyapps.io/opstr/) 
 <!-- [`r fa("laptop-code", fill = "black")`](https://mlozanoqf.shinyapps.io/opstr/) -->
-
-# [<span style="color: black">Supervision guide.</span>](https://mlozanoqf.github.io/supervision/) 
+- [<span style="color: black">Mini Crypto Miner: Eco-Friendly Proof-of-Work Challenge. (App).</span>](https://mlozanoqf.shinyapps.io/pass/) 
+- [<span style="color: black">Supervision guide.</span>](https://mlozanoqf.github.io/supervision/) 
 <!-- [`r fa("graduation-cap", fill = "black")`](https://mlozanoqf.github.io/supervision/) -->
-
-# [<span style="color: black">Essays (Spanish).</span>](https://mlozanoqf.github.io/ensayos/) 
-
-# [<span style="color: black">My curriculum vitae.</span>](https://mlozanoqf.github.io/resume/) 
+- [<span style="color: black">YouTube playlist: "Ah, ya entendí." (Spanish).</span>](https://www.youtube.com/watch?v=WVSP6z9EG44&list=PLLvF5aOnCZwkkUNw-gOfycMM15YK1uOQL) 
+- [<span style="color: black">Essays (Spanish).</span>](https://mlozanoqf.github.io/ensayos/) 
+- [<span style="color: black">My curriculum vitae.</span>](https://mlozanoqf.github.io/resume/) 
