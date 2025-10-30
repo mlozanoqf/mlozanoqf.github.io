@@ -46,6 +46,7 @@ xfun::file_string('contact.html')
 [![Scholar](https://img.shields.io/badge/Scholar-white?logo=googlescholar&logoColor=4285F4&style=flat-square)](https://scholar.google.com/citations?user=w8boOboAAAAJ&hl=en)
 [![SSRN](https://img.shields.io/badge/SSRN-white?logo=readthedocs&logoColor=000000&style=flat-square)](https://ssrn.com/author=1490785)
 [![Zoom](https://img.shields.io/badge/Zoom-white?logo=zoom&logoColor=2D8CFF&style=flat-square)](https://us02web.zoom.us/j/9209945512)
+![Mi gráfico](panda.png){width=10%}
 
 <hr style="border:2px solid gray">
 
