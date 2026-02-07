@@ -41,6 +41,7 @@ xfun::file_string('contact.html')
   LinkedIn
 </a>
 [![YouTube](https://img.shields.io/badge/YouTube-white?logo=youtube&logoColor=FF0000&style=flat-square)](https://www.youtube.com/@ahyaentendi)
+[![Substack](https://img.shields.io/badge/Substack-white?logo=substack&logoColor=FF6719&style=flat-square)](https://ahyaentendi.substack.com/)
 [![Website](https://img.shields.io/badge/Website-white?logo=googlechrome&logoColor=4285F4&style=flat-square)](https://sites.google.com/site/mlozanoqf)
 [![Email](https://img.shields.io/badge/Email-white?logo=gmail&logoColor=D14836&style=flat-square)](mailto:mlozanoqf@gmail.com)
 [![Scholar](https://img.shields.io/badge/Scholar-white?logo=googlescholar&logoColor=4285F4&style=flat-square)](https://scholar.google.com/citations?user=w8boOboAAAAJ&hl=en)
@@ -68,5 +69,6 @@ xfun::file_string('contact.html')
 - [<span style="color: black">Supervision guide.</span>](https://mlozanoqf.github.io/supervision/) 
 <!-- [`r fa("graduation-cap", fill = "black")`](https://mlozanoqf.github.io/supervision/) -->
 - [<span style="color: black">YouTube channel: "Ah, ya entendí." (Spanish).</span>](https://www.youtube.com/@ahyaentendi) 
+- [<span style="color: black">Escribo en Substack: "Ah, ya entendí." (Spanish).</span>](https://ahyaentendi.substack.com/) 
 - [<span style="color: black">Essays (Spanish).</span>](https://mlozanoqf.github.io/ensayos/) 
 - [<span style="color: black">My curriculum vitae.</span>](https://mlozanoqf.github.io/resume/) 
