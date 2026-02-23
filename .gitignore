@@ -4,3 +4,8 @@
 .Ruserdata
 
 /.quarto/
+
+**/*.quarto_ipynb
+
+SESSION_NOTES.md
+AGENTS.md

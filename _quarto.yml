@@ -1,5 +1,8 @@
-title: Quantitative finance with {{< fa brands r-project >}} <span style="color:white">R</span>
-subtitle: Dr. Martín Lozano <tt>`<mlozanoqf@gmail.com>`</tt>
+title: Dr. Martín Lozano | Research, Teaching, and Resources in Quantitative Finance
+subtitle: Research, Teaching, and Resources in Quantitative Finance
+site-url: https://mlozanoqf.github.io/
+description: Research, teaching, tutorials, and practical tools in quantitative finance by Dr. Martín Lozano.
+image: "mlozano muppet.png"
 #author: Dr. Martín Lozano.
 date-modified: now
 date-format: "MMMM D, YYYY, HH:mm:ss a."
@@ -8,12 +11,12 @@ date-format: "MMMM D, YYYY, HH:mm:ss a."
 # abstract: This material relies on @Hull credit risk chapters and Lore Dirick credit risk DataCamp course. Some mathematical background is skipped to emphasize the data analysis, model logic, discussion, graphical approach and R coding [@Rref]. As in the philosophy of @knuth1984literate, the objective of this document is to explain to human beings what we want a computer to do as literate programming. This is a work in progress and it is under revision.
 # bibliography: references.bib
 
-theme:
-  light: flatly
-  dark: darkly
+theme: flatly
 
 format:
   html:
+    favicon: "mlozano muppet.png"
+    open-graph: true
     #toc: true
     toc-title: Contents
     smooth-scroll: true
