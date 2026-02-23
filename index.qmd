@@ -447,6 +447,11 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
 }
 .qf-card ul {
   margin-bottom: 0;
+  list-style: none;
+  padding-left: 0;
+}
+.qf-card li + li {
+  margin-top: 0.25rem;
 }
 .qf-card a {
   color: #00557a;
@@ -603,7 +608,7 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
   </article>
 
   <article class="qf-card qf-card-tutorials">
-    <h3>Tutorials (Quant Finance with R)</h3>
+    <h3>Quant Finance with R</h3>
     <p>Structured tutorials in R for applied quantitative finance.</p>
     <ul>
       <li><a href="https://mlozanoqf.github.io/tutorial_arf/">Credit risk</a></li>
@@ -618,8 +623,8 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
     <h3>Tools and Projects</h3>
     <p>Interactive applications and open repositories for applied finance.</p>
     <ul>
-      <li><a href="https://mlozanoqf.shinyapps.io/opstr/">European options strategy analyzer (Shiny)</a></li>
-      <li><a href="https://mlozanoqf.shinyapps.io/pass/">Mini Crypto Miner: Eco-Friendly Proof-of-Work Challenge (Shiny)</a></li>
+      <li><a href="https://mlozanoqf.shinyapps.io/opstr/">European options strategy analyzer</a></li>
+      <li><a href="https://mlozanoqf.shinyapps.io/pass/">Mini Crypto Miner</a></li>
     </ul>
   </article>
 
@@ -630,7 +635,7 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
       <li>Personal: <a href="mailto:mlozanoqf@gmail.com">mlozanoqf@gmail.com</a></li>
       <li>UDEM: <a href="mailto:martin.lozano@udem.edu">martin.lozano@udem.edu</a></li>
       <li>SOAS: <a href="mailto:ml143@soas.ac.uk">ml143@soas.ac.uk</a></li>
-      <li>Manchester: <a href="mailto:martin.lozanobanda@manchester.ac.uk">martin.lozanobanda@manchester.ac.uk</a></li>
+      <li>UoM: <a href="mailto:martin.lozanobanda@manchester.ac.uk">martin.lozanobanda@manchester.ac.uk</a></li>
     </ul>
   </article>
 </section>
