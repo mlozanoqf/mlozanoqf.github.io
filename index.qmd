@@ -638,11 +638,11 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
     <span class="qf-metric-label">Latest from: Ah, ya entendí</span>
     <div class="qf-metric-grid">
       <div>
-        <span class="qf-metric-prefix">Latest YouTube:</span>
+        <span class="qf-metric-prefix">YouTube:</span>
         <a href="`r youtube_latest$link`">`r entry_title_html(youtube_latest)`</a><span class="qf-metric-date-inline">`r entry_date_suffix(youtube_latest)`</span>
       </div>
       <div>
-        <span class="qf-metric-prefix">Latest Substack:</span>
+        <span class="qf-metric-prefix">Substack:</span>
         <a href="`r substack_latest$link`">`r entry_title_html(substack_latest)`</a><span class="qf-metric-date-inline">`r entry_date_suffix(substack_latest)`</span>
       </div>
     </div>
