@@ -636,7 +636,7 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
 ```{=html}
 <section class="qf-metrics">
   <div class="qf-metric">
-    <span class="qf-metric-label">Latest from Ah, ya entendí</span>
+    <span class="qf-metric-label">Latest from: Ah, ya entendí</span>
     <div class="qf-metric-grid">
       <div>
         <span class="qf-metric-prefix">Latest YouTube:</span>
@@ -690,8 +690,8 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
     <p>Videos, essays, and code resources for applied finance.</p>
     <ul>
       <li><a href="https://www.youtube.com/@ahyaentendi">YouTube</a></li>
-      <li><a href="https://ahyaentendi.substack.com/">Substack</a></li>
       <li><a href="https://github.com/mlozanoqf/ahyaentendi">GitHub</a></li>
+      <li><a href="https://ahyaentendi.substack.com/">Substack</a></li>
     </ul>
   </article>
 </section>
