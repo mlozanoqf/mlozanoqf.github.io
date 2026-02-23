@@ -603,10 +603,9 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
 ```{=html}
 <section class="qf-hero">
   <div class="qf-main">
-    <p class="qf-kicker">Official website</p>
     <h1 class="qf-title">Dr. Martín Lozano</h1>
     <p class="qf-subtitle">Research, Teaching, and Resources in Quantitative Finance</p>
-    <p class="qf-metahead"><strong>Modified:</strong> `r site_modified`</p>
+    <p class="qf-metahead">Modified: `r site_modified`</p>
     <div class="qf-meta">
       Version <code>`r site_hash_short`</code> ·
       Words <code>`r format(site_word_count, big.mark = ",")`</code>
