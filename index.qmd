@@ -327,10 +327,7 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
   display: none !important;
 }
 .qf-hero {
-  display: grid;
-  grid-template-columns: 1.3fr 0.7fr;
-  gap: 2rem;
-  align-items: center;
+  display: block;
   border: 1px solid #b9d4e4;
   border-radius: 18px;
   padding: 2rem;
@@ -388,6 +385,26 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
   margin: 1rem 0 0;
   overflow-x: auto;
 }
+.qf-main {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  grid-template-areas:
+    "kicker photo"
+    "title photo"
+    "subtitle photo"
+    "metahead photo"
+    "meta photo"
+    "links photo";
+  gap: 0.6rem 2rem;
+  align-items: center;
+}
+.qf-kicker { grid-area: kicker; }
+.qf-title { grid-area: title; }
+.qf-subtitle { grid-area: subtitle; }
+.qf-metahead { grid-area: metahead; }
+.qf-meta { grid-area: meta; }
+.qf-links { grid-area: links; }
+.qf-photo-wrap { grid-area: photo; }
 .qf-link {
   display: inline-block;
   padding: 0.3rem 0.58rem;
@@ -528,8 +545,11 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
 }
 @media (max-width: 900px) {
   .qf-hero {
-    grid-template-columns: 1fr;
     text-align: center;
+  }
+  .qf-main {
+    display: flex;
+    flex-direction: column;
   }
   .qf-grid {
     grid-template-columns: 1fr;
@@ -538,6 +558,12 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
     justify-content: center;
     flex-wrap: wrap;
     overflow-x: visible;
+    order: 3;
+    margin-top: 1.1rem;
+  }
+  .qf-photo-wrap {
+    order: 2;
+    margin-top: 0.9rem;
   }
 }
 </style>
@@ -545,7 +571,7 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
 
 ```{=html}
 <section class="qf-hero">
-  <div>
+  <div class="qf-main">
     <p class="qf-kicker">Official website</p>
     <h1 class="qf-title">Dr. Martín Lozano</h1>
     <p class="qf-subtitle">Research, Teaching, and Resources in Quantitative Finance</p>
@@ -553,6 +579,9 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
     <div class="qf-meta">
       Version <code>`r site_hash_short`</code> ·
       Words <code>`r format(site_word_count, big.mark = ",")`</code>
+    </div>
+    <div class="qf-photo-wrap">
+      <img class="qf-photo" src="foto mlozano.jpg" alt="Profile photo">
     </div>
     <div class="qf-links">
       <a class="qf-link" href="https://scholar.google.com/citations?user=w8boOboAAAAJ&hl=en">Scholar</a>
@@ -563,9 +592,6 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
       <a class="qf-link" href="https://ahyaentendi.substack.com/">Substack</a>
       <a class="qf-link" href="https://us02web.zoom.us/j/9209945512">Zoom</a>
     </div>
-  </div>
-  <div class="qf-photo-wrap">
-    <img class="qf-photo" src="foto mlozano.jpg" alt="Profile photo">
   </div>
 </section>
 ```

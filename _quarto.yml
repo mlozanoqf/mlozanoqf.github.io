@@ -35,6 +35,7 @@ format:
     page-layout: full
     include-after-body: analytics.html
     include-in-header:
+      - favicon.html
       - back-to-top.html
       - progressbar.html
 
