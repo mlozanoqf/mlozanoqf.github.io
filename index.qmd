@@ -620,7 +620,7 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
       <a class="qf-link" href="https://scholar.google.com/citations?user=w8boOboAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Scholar</a>
       <a class="qf-link" href="https://ssrn.com/author=1490785" target="_blank" rel="noopener noreferrer">SSRN</a>
       <a class="qf-link" href="https://github.com/mlozanoqf" target="_blank" rel="noopener noreferrer">GitHub</a>
-      <a class="qf-link" href="https://linkedin.com/in/martin-lozano-21818a22" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a class="qf-link" href="http://www.linkedin.com/in/mlozanoqf" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       <a class="qf-link" href="https://www.youtube.com/@ahyaentendi" target="_blank" rel="noopener noreferrer">YouTube</a>
       <a class="qf-link" href="https://ahyaentendi.substack.com/" target="_blank" rel="noopener noreferrer">Substack</a>
       <a class="qf-link" href="https://us02web.zoom.us/j/9209945512" target="_blank" rel="noopener noreferrer">Zoom</a>
