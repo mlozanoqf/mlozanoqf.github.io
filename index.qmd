@@ -52,6 +52,9 @@ count_source_words <- function(paths) {
 site_hash <- compute_version_hash(site_source_files)
 site_hash_short <- substr(site_hash, 1, 12)
 site_word_count <- count_source_words(site_word_files)
+old_lc_time <- Sys.getlocale("LC_TIME")
+on.exit(try(Sys.setlocale("LC_TIME", old_lc_time), silent = TRUE), add = TRUE)
+try(Sys.setlocale("LC_TIME", "C"), silent = TRUE)
 site_modified <- paste0(
   format(Sys.time(), "%B %d, %Y, %H:%M:%S"),
   " ",
@@ -614,13 +617,13 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
       <img class="qf-photo" src="foto mlozano.jpg" alt="Profile photo">
     </div>
     <div class="qf-links">
-      <a class="qf-link" href="https://scholar.google.com/citations?user=w8boOboAAAAJ&hl=en">Scholar</a>
-      <a class="qf-link" href="https://ssrn.com/author=1490785">SSRN</a>
-      <a class="qf-link" href="https://github.com/mlozanoqf">GitHub</a>
-      <a class="qf-link" href="https://linkedin.com/in/martin-lozano-21818a22">LinkedIn</a>
-      <a class="qf-link" href="https://www.youtube.com/@ahyaentendi">YouTube</a>
-      <a class="qf-link" href="https://ahyaentendi.substack.com/">Substack</a>
-      <a class="qf-link" href="https://us02web.zoom.us/j/9209945512">Zoom</a>
+      <a class="qf-link" href="https://scholar.google.com/citations?user=w8boOboAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Scholar</a>
+      <a class="qf-link" href="https://ssrn.com/author=1490785" target="_blank" rel="noopener noreferrer">SSRN</a>
+      <a class="qf-link" href="https://github.com/mlozanoqf" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a class="qf-link" href="https://linkedin.com/in/martin-lozano-21818a22" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a class="qf-link" href="https://www.youtube.com/@ahyaentendi" target="_blank" rel="noopener noreferrer">YouTube</a>
+      <a class="qf-link" href="https://ahyaentendi.substack.com/" target="_blank" rel="noopener noreferrer">Substack</a>
+      <a class="qf-link" href="https://us02web.zoom.us/j/9209945512" target="_blank" rel="noopener noreferrer">Zoom</a>
     </div>
   </div>
 </section>
@@ -639,11 +642,11 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
     <div class="qf-metric-grid">
       <div>
         <span class="qf-metric-prefix">YouTube:</span>
-        <a href="`r youtube_latest$link`">`r entry_title_html(youtube_latest)`</a><span class="qf-metric-date-inline">`r entry_date_suffix(youtube_latest)`</span>
+        <a href="`r youtube_latest$link`" target="_blank" rel="noopener noreferrer">`r entry_title_html(youtube_latest)`</a><span class="qf-metric-date-inline">`r entry_date_suffix(youtube_latest)`</span>
       </div>
       <div>
         <span class="qf-metric-prefix">Substack:</span>
-        <a href="`r substack_latest$link`">`r entry_title_html(substack_latest)`</a><span class="qf-metric-date-inline">`r entry_date_suffix(substack_latest)`</span>
+        <a href="`r substack_latest$link`" target="_blank" rel="noopener noreferrer">`r entry_title_html(substack_latest)`</a><span class="qf-metric-date-inline">`r entry_date_suffix(substack_latest)`</span>
       </div>
     </div>
   </div>
@@ -657,8 +660,8 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
     <p>Academic profile and publications.</p>
     <ul>
       <li><a href="https://mlozanoqf.github.io/resume/">Curriculum vitae</a></li>
-      <li><a href="https://scholar.google.com/citations?user=w8boOboAAAAJ&hl=en">Google Scholar profile</a></li>
-      <li><a href="https://ssrn.com/author=1490785">SSRN author page</a></li>
+      <li><a href="https://scholar.google.com/citations?user=w8boOboAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Google Scholar profile</a></li>
+      <li><a href="https://ssrn.com/author=1490785" target="_blank" rel="noopener noreferrer">SSRN author page</a></li>
       <li><a href="https://mlozanoqf.github.io/supervision/">Supervision guide</a></li>
     </ul>
   </article>
@@ -678,9 +681,9 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
     <h3>Tools and Projects</h3>
     <p>Interactive applications and open repositories for applied finance.</p>
     <ul>
-      <li><a href="https://mlozanoqf.shinyapps.io/opstr/">European options strategy analyzer</a></li>
-      <li><a href="https://mlozanoqf.shinyapps.io/pass/">Mini Crypto Miner</a></li>
-      <li><a href="https://github.com/mlozanoqf/RunwayFinance">Credit risk in public firms</a></li>
+      <li><a href="https://mlozanoqf.shinyapps.io/opstr/" target="_blank" rel="noopener noreferrer">European options strategy analyzer</a></li>
+      <li><a href="https://mlozanoqf.shinyapps.io/pass/" target="_blank" rel="noopener noreferrer">Mini Crypto Miner</a></li>
+      <li><a href="https://github.com/mlozanoqf/RunwayFinance" target="_blank" rel="noopener noreferrer">Credit risk in public firms</a></li>
     </ul>
   </article>
 
@@ -688,9 +691,9 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
     <h3>Ah, ya entendí</h3>
     <p>Videos, essays, and code resources for applied finance.</p>
     <ul>
-      <li><a href="https://www.youtube.com/@ahyaentendi">YouTube</a></li>
-      <li><a href="https://github.com/mlozanoqf/ahyaentendi">GitHub</a></li>
-      <li><a href="https://ahyaentendi.substack.com/">Substack</a></li>
+      <li><a href="https://www.youtube.com/@ahyaentendi" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+      <li><a href="https://github.com/mlozanoqf/ahyaentendi" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+      <li><a href="https://ahyaentendi.substack.com/" target="_blank" rel="noopener noreferrer">Substack</a></li>
     </ul>
   </article>
 </section>
