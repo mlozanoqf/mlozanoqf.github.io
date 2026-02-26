@@ -683,7 +683,7 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
     <ul>
       <li><a href="https://mlozanoqf.shinyapps.io/opstr/" target="_blank" rel="noopener noreferrer">European options strategy analyzer</a></li>
       <li><a href="https://mlozanoqf.shinyapps.io/pass/" target="_blank" rel="noopener noreferrer">Mini Crypto Miner</a></li>
-      <li><a href="https://github.com/mlozanoqf/RunwayFinance" target="_blank" rel="noopener noreferrer">Credit risk in public firms</a></li>
+      <li><a href="https://edgar-mlozanoqf.streamlit.app/" target="_blank" rel="noopener noreferrer">EDGAR Explorer</a></li>
     </ul>
   </article>
 
