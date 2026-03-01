@@ -89,6 +89,16 @@ fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
   )
 
   fetch_xml_text <- function(url) {
+    via_curl <- tryCatch({
+      out <- system2(
+        "curl",
+        c("-L", "-s", "-A", "Mozilla/5.0", url),
+        stdout = TRUE,
+        stderr = FALSE
+      )
+      paste(out, collapse = "\n")
+    }, error = function(e) "")
+    if (nzchar(via_curl)) return(via_curl)
     tryCatch(
       paste(readLines(url, warn = FALSE, encoding = "UTF-8"), collapse = "\n"),
       error = function(e) ""
@@ -120,7 +130,9 @@ fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
 
   parse_with_xml2 <- function(url) {
     if (!requireNamespace("xml2", quietly = TRUE)) return(NULL)
-    doc <- tryCatch(xml2::read_xml(url), error = function(e) NULL)
+    xml <- fetch_xml_text(url)
+    if (!nzchar(xml)) return(NULL)
+    doc <- tryCatch(xml2::read_xml(xml), error = function(e) NULL)
     if (is.null(doc)) return(NULL)
     entry <- xml2::xml_find_first(doc, "//*[local-name()='entry' or local-name()='item']")
     if (inherits(entry, "xml_missing")) return(NULL)
@@ -258,8 +270,18 @@ read_feed_cache <- function(path) {
   tryCatch(readRDS(path), error = function(e) NULL)
 }
 
-use_cached_if_needed <- function(current, cached_entry) {
+is_cache_fresh <- function(updated_at, max_age_hours = 48) {
+  if (is.null(updated_at) || !nzchar(updated_at)) return(FALSE)
+  ts <- suppressWarnings(as.POSIXct(updated_at, format = "%Y-%m-%d %H:%M:%S", tz = "UTC"))
+  if (is.na(ts)) ts <- suppressWarnings(as.POSIXct(updated_at, tz = "UTC"))
+  if (is.na(ts)) return(FALSE)
+  age_hours <- as.numeric(difftime(Sys.time(), ts, units = "hours"))
+  !is.na(age_hours) && age_hours <= max_age_hours
+}
+
+use_cached_if_needed <- function(current, cached_entry, cache_updated_at = NULL, max_age_hours = 48) {
   if (isTRUE(current$ok)) return(current)
+  if (!is_cache_fresh(cache_updated_at, max_age_hours)) return(current)
   if (is.null(cached_entry) || !is.list(cached_entry)) return(current)
   req <- c("title", "link", "date", "ok")
   if (!all(req %in% names(cached_entry))) return(current)
@@ -295,8 +317,17 @@ entry_date_suffix <- function(entry) {
 }
 
 feed_cache <- read_feed_cache(cache_path)
-youtube_latest <- use_cached_if_needed(youtube_latest, if (!is.null(feed_cache)) feed_cache$youtube else NULL)
-substack_latest <- use_cached_if_needed(substack_latest, if (!is.null(feed_cache)) feed_cache$substack else NULL)
+cache_updated_at <- if (!is.null(feed_cache)) feed_cache$updated_at else NULL
+youtube_latest <- use_cached_if_needed(
+  youtube_latest,
+  if (!is.null(feed_cache)) feed_cache$youtube else NULL,
+  cache_updated_at = cache_updated_at
+)
+substack_latest <- use_cached_if_needed(
+  substack_latest,
+  if (!is.null(feed_cache)) feed_cache$substack else NULL,
+  cache_updated_at = cache_updated_at
+)
 
 if (isTRUE(youtube_latest$ok) || isTRUE(substack_latest$ok)) {
   cache_payload <- list(
