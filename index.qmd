@@ -132,6 +132,12 @@ fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
     trimws(x)
   }
 
+  strip_tags <- function(x) {
+    x <- gsub("(?is)<[^>]+>", " ", x, perl = TRUE)
+    x <- gsub("\\s+", " ", x, perl = TRUE)
+    trimws(x)
+  }
+
   parse_with_xml2 <- function(url) {
     if (!requireNamespace("xml2", quietly = TRUE)) return(NULL)
     xml <- fetch_xml_text(url)
@@ -172,8 +178,47 @@ fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
     list(title = title, link = link, date = date_txt)
   }
 
+  parse_with_substack_archive <- function(url) {
+    archive_url <- sub("/feed/?$", "/archive", url)
+    html <- fetch_xml_text(archive_url)
+    if (!nzchar(html)) return(NULL)
+
+    title_block <- extract_first_block(
+      html,
+      "(?is)<a\\b[^>]*data-testid=['\"]post-preview-title['\"][^>]*>.*?</a>"
+    )
+    if (!nzchar(title_block)) return(NULL)
+
+    href_hit <- regmatches(
+      title_block,
+      regexec("href=['\"]([^'\"]+)['\"]", title_block, perl = TRUE)
+    )[[1]]
+    link <- if (length(href_hit) >= 2) href_hit[2] else ""
+    title <- strip_tags(decode_entities(sub("(?is)^.*?>(.*?)</a>$", "\\1", title_block, perl = TRUE)))
+
+    comment_hit <- regmatches(
+      html,
+      regexec("data-href=['\"](https://[^'\"]+/p/[^'\"]+)/comments['\"]", html, perl = TRUE)
+    )[[1]]
+    if (length(comment_hit) >= 2 && nzchar(comment_hit[2])) {
+      link <- comment_hit[2]
+    }
+
+    date_hit <- regmatches(
+      html,
+      regexec("(?is)<time[^>]*datetime=['\"]([^'\"]+)['\"]", html, perl = TRUE)
+    )[[1]]
+    date_txt <- if (length(date_hit) >= 2) date_hit[2] else ""
+
+    if (!nzchar(title) || !nzchar(link)) return(NULL)
+    list(title = title, link = link, date = date_txt)
+  }
+
   parsed <- parse_with_xml2(feed_url)
   if (is.null(parsed)) parsed <- parse_with_regex(feed_url)
+  if (is.null(parsed) && grepl("substack\\.com/feed/?$", feed_url)) {
+    parsed <- parse_with_substack_archive(feed_url)
+  }
   if (is.null(parsed)) return(out)
 
   title <- parsed$title
