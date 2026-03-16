@@ -26,6 +26,10 @@ jobs:
         with:
           version: "1.8.25"
 
+      - name: Install R dependencies
+        run: |
+          Rscript -e "install.packages(c('knitr', 'rmarkdown', 'fontawesome', 'tictoc', 'digest', 'xml2'), repos = 'https://cloud.r-project.org')"
+
       - name: Render homepage
         env:
           XDG_CACHE_HOME: ${{ github.workspace }}/.cache
