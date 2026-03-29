@@ -6,14 +6,14 @@ tic()
 
 # Session working log is kept in SESSION_NOTES.md (local-only, gitignored).
 # On each new Codex session, read SESSION_NOTES.md first before inferring prior context.
-# Files that define this homepage content/version.
-site_source_files <- c(
+# Files that define the human-authored homepage content.
+site_static_source_files <- c(
   "index.qmd",
   "_quarto.yml",
   "contact.html"
 )
-site_source_files <- site_source_files[file.exists(site_source_files)]
-site_word_files <- site_source_files[grepl("\\.(qmd)$", site_source_files)]
+site_static_source_files <- site_static_source_files[file.exists(site_static_source_files)]
+site_word_files <- site_static_source_files[grepl("\\.(qmd)$", site_static_source_files)]
 
 read_utf8 <- function(path) {
   paste(readLines(path, warn = FALSE, encoding = "UTF-8"), collapse = "\n")
@@ -49,18 +49,6 @@ count_source_words <- function(paths) {
   sum(vapply(paths, count_one, integer(1)))
 }
 
-site_hash <- compute_version_hash(site_source_files)
-site_hash_short <- substr(site_hash, 1, 12)
-site_word_count <- count_source_words(site_word_files)
-old_lc_time <- Sys.getlocale("LC_TIME")
-on.exit(try(Sys.setlocale("LC_TIME", old_lc_time), silent = TRUE), add = TRUE)
-try(Sys.setlocale("LC_TIME", "C"), silent = TRUE)
-site_modified <- paste0(
-  format(Sys.time(), "%B %d, %Y, %H:%M:%S"),
-  " ",
-  tolower(format(Sys.time(), "%p"))
-)
-
 safe_html <- function(x) {
   x <- gsub("&", "&amp;", x, fixed = TRUE)
   x <- gsub("<", "&lt;", x, fixed = TRUE)
@@ -68,9 +56,18 @@ safe_html <- function(x) {
   x
 }
 
+format_timestamp <- function(x) {
+  paste0(
+    format(x, "%B %d, %Y, %H:%M:%S"),
+    " ",
+    tolower(format(x, "%p"))
+  )
+}
+
 format_feed_date <- function(x) {
   if (is.null(x) || is.na(x) || !nzchar(x)) return("")
-  x2 <- sub("Z$", "+0000", x)
+  x2 <- sub("\\.\\d+(?=Z$)", "", x, perl = TRUE)
+  x2 <- sub("Z$", "+0000", x2)
   x2 <- sub(" GMT$", " +0000", x2)
   dt <- suppressWarnings(as.POSIXct(x2, format = "%Y-%m-%dT%H:%M:%S%z", tz = "UTC"))
   if (is.na(dt)) {
@@ -83,7 +80,7 @@ format_feed_date <- function(x) {
   format(dt, "%b %d, %Y")
 }
 
-fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
+normalize_entry <- function(entry, fallback_title = "", fallback_url = "") {
   out <- list(
     title = fallback_title,
     link = fallback_url,
@@ -91,6 +88,53 @@ fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
     ok = FALSE,
     source = "fallback"
   )
+
+  if (is.null(entry) || !is.list(entry)) return(out)
+
+  for (nm in intersect(names(out), names(entry))) {
+    out[[nm]] <- entry[[nm]]
+  }
+
+  out$title <- if (!is.null(out$title)) as.character(out$title)[1] else fallback_title
+  out$link <- if (!is.null(out$link)) as.character(out$link)[1] else fallback_url
+  out$date <- if (!is.null(out$date)) as.character(out$date)[1] else ""
+  out$ok <- isTRUE(out$ok)
+  out$source <- if (!is.null(out$source) && nzchar(out$source)) {
+    as.character(out$source)[1]
+  } else if (isTRUE(out$ok)) {
+    "cache"
+  } else {
+    "fallback"
+  }
+
+  out
+}
+
+same_entry_content <- function(a, b) {
+  if (is.null(a) && is.null(b)) return(TRUE)
+  if (is.null(a) || is.null(b)) return(FALSE)
+  a <- normalize_entry(a)
+  b <- normalize_entry(b)
+  identical(
+    list(title = a$title, link = a$link, date = a$date, ok = a$ok),
+    list(title = b$title, link = b$link, date = b$date, ok = b$ok)
+  )
+}
+
+fill_missing_entry_fields <- function(primary, fallback) {
+  primary <- normalize_entry(primary)
+  if (is.null(fallback)) return(primary)
+  fallback <- normalize_entry(fallback)
+  for (field in c("title", "link", "date")) {
+    if (!nzchar(primary[[field]]) && nzchar(fallback[[field]])) {
+      primary[[field]] <- fallback[[field]]
+    }
+  }
+  primary
+}
+
+fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
+  out <- normalize_entry(NULL, fallback_title = fallback_title, fallback_url = fallback_url)
 
   fetch_xml_text <- function(url) {
     via_curl <- tryCatch({
@@ -144,16 +188,26 @@ fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
     if (!nzchar(xml)) return(NULL)
     doc <- tryCatch(xml2::read_xml(xml), error = function(e) NULL)
     if (is.null(doc)) return(NULL)
+
+    find_first_text <- function(node, tags) {
+      for (tag in tags) {
+        hit <- xml2::xml_find_first(node, paste0("./*[local-name()='", tag, "']"))
+        if (!inherits(hit, "xml_missing")) {
+          txt <- trimws(xml2::xml_text(hit))
+          if (nzchar(txt)) return(txt)
+        }
+      }
+      ""
+    }
+
     entry <- xml2::xml_find_first(doc, "//*[local-name()='entry' or local-name()='item']")
     if (inherits(entry, "xml_missing")) return(NULL)
-    title <- trimws(xml2::xml_text(xml2::xml_find_first(entry, "./*[local-name()='title']")))
+    title <- find_first_text(entry, c("title"))
     atom_link <- xml2::xml_find_first(entry, "./*[local-name()='link'][@rel='alternate']")
     atom_href <- xml2::xml_attr(atom_link, "href")
-    rss_link <- trimws(xml2::xml_text(xml2::xml_find_first(entry, "./*[local-name()='link']")))
+    rss_link <- find_first_text(entry, c("link"))
     link <- if (!is.na(atom_href) && nzchar(atom_href)) atom_href else rss_link
-    date_txt <- trimws(xml2::xml_text(
-      xml2::xml_find_first(entry, "./*[local-name()='published' or local-name()='updated' or local-name()='pubDate']")
-    ))
+    date_txt <- find_first_text(entry, c("published", "updated", "pubDate"))
     list(title = title, link = link, date = date_txt)
   }
 
@@ -204,6 +258,19 @@ fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
       link <- comment_hit[2]
     }
 
+    slug_hit <- regmatches(
+      html,
+      regexec("\\\\\"slug\\\\\":\\\\\"([^\\\\\"]+)\\\\\"", html, perl = TRUE)
+    )[[1]]
+    if (
+      (!nzchar(link) || grepl("substack\\.com/home/post/", link)) &&
+      length(slug_hit) >= 2 &&
+      nzchar(slug_hit[2])
+    ) {
+      pub_home <- sub("/feed/?$", "", url)
+      link <- paste0(pub_home, "/p/", slug_hit[2])
+    }
+
     date_hit <- regmatches(
       html,
       regexec("(?is)<time[^>]*datetime=['\"]([^'\"]+)['\"]", html, perl = TRUE)
@@ -214,11 +281,31 @@ fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
     list(title = title, link = link, date = date_txt)
   }
 
-  parsed <- parse_with_xml2(feed_url)
-  if (is.null(parsed)) parsed <- parse_with_regex(feed_url)
-  if (is.null(parsed) && grepl("substack\\.com/feed/?$", feed_url)) {
-    parsed <- parse_with_substack_archive(feed_url)
+  combine_parsed_entries <- function(entries) {
+    entries <- Filter(Negate(is.null), entries)
+    if (!length(entries)) return(NULL)
+    score_one <- function(x) {
+      sum(nzchar(c(x$title, x$link, x$date)))
+    }
+    best <- entries[[which.max(vapply(entries, score_one, numeric(1)))]]
+    for (entry in entries) {
+      for (field in c("title", "link", "date")) {
+        if (!nzchar(best[[field]]) && nzchar(entry[[field]])) {
+          best[[field]] <- entry[[field]]
+        }
+      }
+    }
+    best
   }
+
+  parsed_candidates <- list(
+    parse_with_xml2(feed_url),
+    parse_with_regex(feed_url)
+  )
+  if (grepl("substack\\.com/feed/?$", feed_url)) {
+    parsed_candidates[[length(parsed_candidates) + 1]] <- parse_with_substack_archive(feed_url)
+  }
+  parsed <- combine_parsed_entries(parsed_candidates)
   if (is.null(parsed)) return(out)
 
   title <- parsed$title
@@ -311,39 +398,82 @@ substack_latest <- fetch_latest_entry(
 )
 
 cache_dir <- "data"
-cache_path <- file.path(cache_dir, "latest-feeds.rds")
+cache_path <- file.path(cache_dir, "latest-feeds.R")
+legacy_cache_path <- file.path(cache_dir, "latest-feeds.rds")
 if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
 
-read_feed_cache <- function(path) {
-  if (!file.exists(path)) return(NULL)
-  tryCatch(readRDS(path), error = function(e) NULL)
+read_feed_cache <- function(path, legacy_path = NULL) {
+  if (file.exists(path)) {
+    return(tryCatch(dget(path), error = function(e) NULL))
+  }
+  if (!is.null(legacy_path) && file.exists(legacy_path)) {
+    return(tryCatch(readRDS(legacy_path), error = function(e) NULL))
+  }
+  NULL
 }
 
-is_cache_fresh <- function(updated_at, max_age_hours = 48) {
-  if (is.null(updated_at) || !nzchar(updated_at)) return(FALSE)
-  ts <- suppressWarnings(as.POSIXct(updated_at, format = "%Y-%m-%d %H:%M:%S", tz = "UTC"))
-  if (is.na(ts)) ts <- suppressWarnings(as.POSIXct(updated_at, tz = "UTC"))
-  if (is.na(ts)) return(FALSE)
-  age_hours <- as.numeric(difftime(Sys.time(), ts, units = "hours"))
-  !is.na(age_hours) && age_hours <= max_age_hours
+write_feed_cache <- function(payload, path) {
+  tryCatch(dput(payload, path), error = function(e) NULL)
 }
 
-use_cached_if_needed <- function(current, cached_entry, cache_updated_at = NULL, max_age_hours = 48) {
-  if (isTRUE(current$ok)) return(current)
-  if (!is_cache_fresh(cache_updated_at, max_age_hours)) return(current)
-  if (is.null(cached_entry) || !is.list(cached_entry)) return(current)
-  req <- c("title", "link", "date", "ok")
-  if (!all(req %in% names(cached_entry))) return(current)
+ensure_cache_shape <- function(cache) {
+  if (is.null(cache) || !is.list(cache)) return(NULL)
+  list(
+    updated_at = if (!is.null(cache$updated_at)) as.character(cache$updated_at)[1] else "",
+    youtube = if (!is.null(cache$youtube)) normalize_entry(cache$youtube) else NULL,
+    substack = if (!is.null(cache$substack)) normalize_entry(cache$substack) else NULL
+  )
+}
+
+merge_live_with_cache <- function(current, cached_entry) {
+  current <- normalize_entry(current)
+  if (is.null(cached_entry)) return(current)
+  cached_entry <- normalize_entry(cached_entry)
+  if (isTRUE(current$ok)) {
+    return(fill_missing_entry_fields(current, cached_entry))
+  }
   if (!isTRUE(cached_entry$ok)) return(current)
-  current$title <- cached_entry$title
-  current$link <- cached_entry$link
-  current$date <- cached_entry$date
-  current$ok <- TRUE
-  current$source <- "cache"
-  current
+  cached_entry$source <- "cache"
+  cached_entry
+}
+
+build_cache_payload <- function(existing_cache, youtube_live, substack_live) {
+  existing_cache <- ensure_cache_shape(existing_cache)
+  existing_youtube <- if (!is.null(existing_cache)) existing_cache$youtube else NULL
+  existing_substack <- if (!is.null(existing_cache)) existing_cache$substack else NULL
+
+  next_youtube <- if (isTRUE(youtube_live$ok)) {
+    fill_missing_entry_fields(youtube_live, existing_youtube)
+  } else {
+    existing_youtube
+  }
+  next_substack <- if (isTRUE(substack_live$ok)) {
+    fill_missing_entry_fields(substack_live, existing_substack)
+  } else {
+    existing_substack
+  }
+
+  changed <- !same_entry_content(next_youtube, existing_youtube) ||
+    !same_entry_content(next_substack, existing_substack)
+
+  updated_at <- if (!is.null(existing_cache) && nzchar(existing_cache$updated_at)) {
+    existing_cache$updated_at
+  } else {
+    ""
+  }
+  if (changed) {
+    updated_at <- format(Sys.time(), "%Y-%m-%d %H:%M:%S", tz = "UTC")
+  }
+
+  list(
+    updated_at = updated_at,
+    youtube = next_youtube,
+    substack = next_substack
+  )
 }
 
 feed_status_line <- function(entry) {
+  entry <- normalize_entry(entry)
   if (!is.null(entry$date) && nzchar(entry$date)) {
     if (identical(entry$source, "cache")) {
       return(paste0(entry$date, " (cached)"))
@@ -355,37 +485,54 @@ feed_status_line <- function(entry) {
 }
 
 entry_title_html <- function(entry) {
+  entry <- normalize_entry(entry)
   safe_html(entry$title)
 }
 
 entry_date_suffix <- function(entry) {
+  entry <- normalize_entry(entry)
   if (!is.null(entry$date) && nzchar(entry$date)) {
     return(paste0(" (", entry$date, ")"))
   }
   ""
 }
 
-feed_cache <- read_feed_cache(cache_path)
-cache_updated_at <- if (!is.null(feed_cache)) feed_cache$updated_at else NULL
-youtube_latest <- use_cached_if_needed(
-  youtube_latest,
-  if (!is.null(feed_cache)) feed_cache$youtube else NULL,
-  cache_updated_at = cache_updated_at
-)
-substack_latest <- use_cached_if_needed(
-  substack_latest,
-  if (!is.null(feed_cache)) feed_cache$substack else NULL,
-  cache_updated_at = cache_updated_at
-)
+feed_cache <- ensure_cache_shape(read_feed_cache(cache_path, legacy_cache_path))
+cache_payload <- build_cache_payload(feed_cache, youtube_latest, substack_latest)
 
-if (isTRUE(youtube_latest$ok) || isTRUE(substack_latest$ok)) {
-  cache_payload <- list(
-    updated_at = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
-    youtube = youtube_latest,
-    substack = substack_latest
-  )
-  tryCatch(saveRDS(cache_payload, cache_path), error = function(e) NULL)
+has_cacheable_entry <- function(entry) {
+  !is.null(entry) && isTRUE(normalize_entry(entry)$ok)
 }
+
+if (
+  (!file.exists(cache_path) && (has_cacheable_entry(cache_payload$youtube) || has_cacheable_entry(cache_payload$substack))) ||
+  !identical(cache_payload, feed_cache)
+) {
+  write_feed_cache(cache_payload, cache_path)
+}
+
+youtube_latest <- merge_live_with_cache(youtube_latest, cache_payload$youtube)
+substack_latest <- merge_live_with_cache(substack_latest, cache_payload$substack)
+
+site_source_files <- unique(c(site_static_source_files, cache_path))
+site_source_files <- site_source_files[file.exists(site_source_files)]
+site_hash <- compute_version_hash(site_source_files)
+site_hash_short <- substr(site_hash, 1, 12)
+site_word_count <- count_source_words(site_word_files)
+
+old_lc_time <- Sys.getlocale("LC_TIME")
+on.exit(try(Sys.setlocale("LC_TIME", old_lc_time), silent = TRUE), add = TRUE)
+try(Sys.setlocale("LC_TIME", "C"), silent = TRUE)
+
+site_modified_time <- if (length(site_source_files)) {
+  suppressWarnings(max(file.info(site_source_files)$mtime, na.rm = TRUE))
+} else {
+  Sys.time()
+}
+if (!inherits(site_modified_time, "POSIXct")) {
+  site_modified_time <- Sys.time()
+}
+site_modified <- format_timestamp(site_modified_time)
 ```
 
 ```{r global_options, include=FALSE}
