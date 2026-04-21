@@ -1,8 +1,5 @@
 ```{r include=FALSE}
 rm(list = ls())
-library(fontawesome)
-library(tictoc)
-tic()
 
 # Session working log is kept in SESSION_NOTES.md (local-only, gitignored).
 # On each new Codex session, read SESSION_NOTES.md first before inferring prior context.
