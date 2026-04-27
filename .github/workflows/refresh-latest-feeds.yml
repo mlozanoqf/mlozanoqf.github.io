@@ -36,6 +36,7 @@ jobs:
             any::rmarkdown
             any::digest
             any::xml2
+            any::jsonlite
 
       - name: Render homepage
         env:

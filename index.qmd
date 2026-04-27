@@ -266,6 +266,38 @@ fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
     list(title = title, link = link, date = date_txt)
   }
 
+  parse_with_substack_api <- function(url) {
+    if (!requireNamespace("jsonlite", quietly = TRUE)) return(NULL)
+
+    api_url <- sub("/feed/?$", "/api/v1/archive?sort=new", url)
+    json_txt <- fetch_xml_text(api_url)
+    if (!nzchar(json_txt)) return(NULL)
+
+    payload <- tryCatch(
+      jsonlite::fromJSON(json_txt, simplifyDataFrame = FALSE),
+      error = function(e) NULL
+    )
+    if (is.null(payload) || !length(payload)) return(NULL)
+
+    first <- payload[[1]]
+    title <- if (!is.null(first$title)) trimws(as.character(first$title)[1]) else ""
+    slug <- if (!is.null(first$slug)) trimws(as.character(first$slug)[1]) else ""
+    link <- if (!is.null(first$canonical_url)) trimws(as.character(first$canonical_url)[1]) else ""
+
+    if (grepl("substack\\.com/home/post/", link) && nzchar(slug)) {
+      pub_home <- sub("/feed/?$", "", url)
+      link <- paste0(pub_home, "/p/", slug)
+    }
+    if (!nzchar(link) && nzchar(slug)) {
+      pub_home <- sub("/feed/?$", "", url)
+      link <- paste0(pub_home, "/p/", slug)
+    }
+
+    date_txt <- if (!is.null(first$post_date)) as.character(first$post_date)[1] else ""
+    if (!nzchar(title) || !nzchar(link)) return(NULL)
+    list(title = title, link = link, date = date_txt)
+  }
+
   parse_with_substack_archive <- function(url) {
     archive_url <- sub("/feed/?$", "/archive", url)
     html <- fetch_xml_text(archive_url)
@@ -360,6 +392,7 @@ fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
     parse_with_regex(feed_url)
   )
   if (grepl("substack\\.com/feed/?$", feed_url)) {
+    parsed_candidates[[length(parsed_candidates) + 1]] <- parse_with_substack_api(feed_url)
     parsed_candidates[[length(parsed_candidates) + 1]] <- parse_with_substack_archive(feed_url)
   }
   parsed <- combine_parsed_entries(parsed_candidates)
