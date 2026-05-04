@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
@@ -38,10 +40,16 @@ jobs:
             any::xml2
             any::jsonlite
 
+      - name: Refresh Substack cache
+        run: Rscript scripts/refresh-substack-cache.R
+
       - name: Render homepage
         env:
           XDG_CACHE_HOME: ${{ github.workspace }}/.cache
         run: quarto render index.qmd
+
+      - name: Verify rendered Substack
+        run: Rscript scripts/verify-rendered-substack.R
 
       - name: Commit refreshed feed snapshot
         run: |

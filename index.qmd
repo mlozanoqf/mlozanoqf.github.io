@@ -149,7 +149,7 @@ fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
   out <- normalize_entry(NULL, fallback_title = fallback_title, fallback_url = fallback_url)
 
   add_cache_buster <- function(url) {
-    sep <- if (grepl("\\?", url, fixed = TRUE)) "&" else "?"
+    sep <- if (grepl("?", url, fixed = TRUE)) "&" else "?"
     paste0(
       url,
       sep,
@@ -170,9 +170,9 @@ fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
           "-A",
           "Mozilla/5.0",
           "-H",
-          "Cache-Control: no-cache, no-store, max-age=0",
+          "Cache-Control:no-cache,no-store,max-age=0",
           "-H",
-          "Pragma: no-cache",
+          "Pragma:no-cache",
           request_url
         ),
         stdout = TRUE,
@@ -267,22 +267,35 @@ fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
   }
 
   parse_with_substack_api <- function(url) {
-    if (!requireNamespace("jsonlite", quietly = TRUE)) return(NULL)
-
     api_url <- sub("/feed/?$", "/api/v1/archive?sort=new", url)
     json_txt <- fetch_xml_text(api_url)
     if (!nzchar(json_txt)) return(NULL)
 
-    payload <- tryCatch(
-      jsonlite::fromJSON(json_txt, simplifyDataFrame = FALSE),
-      error = function(e) NULL
-    )
-    if (is.null(payload) || !length(payload)) return(NULL)
+    decode_json_string <- function(x) {
+      if (!nzchar(x)) return("")
+      if (requireNamespace("jsonlite", quietly = TRUE)) {
+        decoded <- tryCatch(jsonlite::fromJSON(paste0("\"", x, "\"")), error = function(e) NULL)
+        if (!is.null(decoded)) return(as.character(decoded)[1])
+      }
 
-    first <- payload[[1]]
-    title <- if (!is.null(first$title)) trimws(as.character(first$title)[1]) else ""
-    slug <- if (!is.null(first$slug)) trimws(as.character(first$slug)[1]) else ""
-    link <- if (!is.null(first$canonical_url)) trimws(as.character(first$canonical_url)[1]) else ""
+      x <- gsub("\\\\/", "/", x, fixed = TRUE)
+      x <- gsub("\\\\\"", "\"", x, fixed = TRUE)
+      x <- gsub("\\\\n", "\n", x, fixed = TRUE)
+      x <- gsub("\\\\r", "\r", x, fixed = TRUE)
+      x <- gsub("\\\\t", "\t", x, fixed = TRUE)
+      x
+    }
+
+    extract_json_string <- function(key) {
+      pattern <- paste0("\"", key, "\"\\s*:\\s*\"((?:\\\\.|[^\"\\\\])*)\"")
+      hit <- regmatches(json_txt, regexec(pattern, json_txt, perl = TRUE))[[1]]
+      if (length(hit) < 2) return("")
+      trimws(decode_json_string(hit[2]))
+    }
+
+    title <- extract_json_string("title")
+    slug <- extract_json_string("slug")
+    link <- extract_json_string("canonical_url")
 
     if (grepl("substack\\.com/home/post/", link) && nzchar(slug)) {
       pub_home <- sub("/feed/?$", "", url)
@@ -293,7 +306,7 @@ fetch_latest_entry <- function(feed_url, fallback_url, fallback_title) {
       link <- paste0(pub_home, "/p/", slug)
     }
 
-    date_txt <- if (!is.null(first$post_date)) as.character(first$post_date)[1] else ""
+    date_txt <- extract_json_string("post_date")
     if (!nzchar(title) || !nzchar(link)) return(NULL)
     list(title = title, link = link, date = date_txt)
   }
@@ -647,14 +660,60 @@ old_lc_time <- Sys.getlocale("LC_TIME")
 on.exit(try(Sys.setlocale("LC_TIME", old_lc_time), silent = TRUE), add = TRUE)
 try(Sys.setlocale("LC_TIME", "C"), silent = TRUE)
 
-site_modified_time <- if (length(site_source_files)) {
-  suppressWarnings(max(file.info(site_source_files)$mtime, na.rm = TRUE))
-} else {
+git_file_mtime <- function(path) {
+  git <- Sys.which("git")
+  if (!nzchar(git)) return(as.POSIXct(NA))
+
+  out <- tryCatch(
+    system2(
+      git,
+      c("log", "-1", "--format=%ct", "--", path),
+      stdout = TRUE,
+      stderr = FALSE
+    ),
+    error = function(e) character()
+  )
+  timestamp <- suppressWarnings(as.numeric(out[1]))
+  if (is.na(timestamp)) return(as.POSIXct(NA))
+  as.POSIXct(timestamp, origin = "1970-01-01", tz = "UTC")
+}
+
+parse_cache_updated_time <- function(cache) {
+  if (is.null(cache) || is.null(cache$updated_at) || !nzchar(cache$updated_at)) {
+    return(as.POSIXct(NA))
+  }
+  suppressWarnings(
+    as.POSIXct(
+      as.character(cache$updated_at)[1],
+      format = "%Y-%m-%d %H:%M:%S",
+      tz = "UTC"
+    )
+  )
+}
+
+source_modified_time <- function(paths, cache = NULL, cache_file = "") {
+  if (!length(paths)) return(Sys.time())
+
+  static_paths <- setdiff(paths, cache_file)
+
+  git_times <- as.POSIXct(
+    vapply(static_paths, function(path) as.numeric(git_file_mtime(path)), numeric(1)),
+    origin = "1970-01-01",
+    tz = "UTC"
+  )
+  cache_time <- parse_cache_updated_time(cache)
+  git_times <- c(git_times, cache_time)
+  git_times <- git_times[!is.na(git_times)]
+  if (length(git_times)) return(max(git_times))
+
+  fs_times <- suppressWarnings(file.info(paths)$mtime)
+  fs_times <- fs_times[!is.na(fs_times)]
+  if (length(fs_times)) return(max(fs_times))
+
   Sys.time()
 }
-if (!inherits(site_modified_time, "POSIXct")) {
-  site_modified_time <- Sys.time()
-}
+
+site_modified_time <- source_modified_time(site_source_files, cache_payload, cache_path)
 site_modified <- format_timestamp(site_modified_time)
 ```
 
