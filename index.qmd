@@ -664,6 +664,20 @@ git_file_mtime <- function(path) {
   git <- Sys.which("git")
   if (!nzchar(git)) return(as.POSIXct(NA))
 
+  changed <- tryCatch(
+    system2(
+      git,
+      c("status", "--porcelain", "--", path),
+      stdout = TRUE,
+      stderr = FALSE
+    ),
+    error = function(e) character()
+  )
+  if (length(changed) && any(nzchar(changed))) {
+    file_time <- suppressWarnings(file.info(path)$mtime)
+    if (!is.na(file_time)) return(file_time)
+  }
+
   out <- tryCatch(
     system2(
       git,
