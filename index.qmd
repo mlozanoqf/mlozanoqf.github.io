@@ -1077,12 +1077,12 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
 
   <article class="qf-card qf-card-tutorials">
     <h3>Quant Finance with R</h3>
-    <p>Structured tutorials in R for applied quantitative finance.</p>
+    <p>Open online books using R for applied quantitative finance.</p>
     <ul>
-      <li><a href="https://mlozanoqf.github.io/tutorial_arf/">Credit risk</a></li>
-      <li><a href="https://mlozanoqf.github.io/tutorial_emf/">Forecasting</a></li>
-      <li><a href="https://mlozanoqf.github.io/tutorial_if/">Options and VaR</a></li>
-      <li><a href="https://mlozanoqf.github.io/tutorial_pmf/">Financial modeling</a></li>
+      <li><a href="https://mlozanoqf.github.io/tutorial_arf/">Credit Risk with R</a></li>
+      <li><a href="https://mlozanoqf.github.io/tutorial_emf/">Forecasting with R</a></li>
+      <li><a href="https://mlozanoqf.github.io/tutorial_if/">Options, Risk, and VaR with R</a></li>
+      <li><a href="https://mlozanoqf.github.io/tutorial_pmf/">Financial Modeling with R</a></li>
     </ul>
   </article>
 
