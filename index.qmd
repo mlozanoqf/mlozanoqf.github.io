@@ -1094,7 +1094,7 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
     <h3>Quant Finance with R</h3>
     <p>Open online books using R for applied quantitative finance.</p>
     <ul>
-      <li><a href="https://mlozanoqf.github.io/tutorial_arf/">Credit Risk with R</a></li>
+      <li><a href="https://mlozanoqf.github.io/tutorial_arf/">Applied Credit Risk Modeling with R</a></li>
       <li><a href="https://mlozanoqf.github.io/tutorial_emf/">Applied Financial Econometrics with R</a></li>
       <li><a href="https://mlozanoqf.github.io/tutorial_if/">Option Pricing with R</a></li>
       <li><a href="https://mlozanoqf.github.io/tutorial_pmf/">Financial modeling with R</a></li>
