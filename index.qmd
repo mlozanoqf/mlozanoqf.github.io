@@ -56,7 +56,7 @@ safe_html <- function(x) {
 format_timestamp <- function(x) {
   display_tz <- "America/Mexico_City"
   paste0(
-    format(x, "%B %d, %Y, %H:%M:%S", tz = display_tz),
+      format(x, "%B %d, %Y, %I:%M:%S", tz = display_tz),
     " ",
     tolower(format(x, "%p", tz = display_tz))
   )
@@ -1094,8 +1094,8 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
     <h3>Quant Finance with R</h3>
     <p>Open online books using R for applied quantitative finance.</p>
     <ul>
-      <li><a href="https://mlozanoqf.github.io/tutorial_arf/">Applied Credit Risk Modeling with R</a></li>
-      <li><a href="https://mlozanoqf.github.io/tutorial_emf/">Applied Financial Econometrics with R</a></li>
+      <li><a href="https://mlozanoqf.github.io/tutorial_arf/">Credit Risk Modeling with R</a></li>
+      <li><a href="https://mlozanoqf.github.io/tutorial_emf/">Financial Econometrics with R</a></li>
       <li><a href="https://mlozanoqf.github.io/tutorial_if/">Option Pricing with R</a></li>
       <li><a href="https://mlozanoqf.github.io/tutorial_pmf/">Financial modeling with R</a></li>
     </ul>
