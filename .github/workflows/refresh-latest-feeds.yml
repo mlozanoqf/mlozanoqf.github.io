@@ -11,7 +11,8 @@ on:
       - "latest-feeds.js"
       - "data/latest-feeds.json"
   schedule:
-    - cron: "17 12 * * 0"
+    # Daily at 06:17 in America/Mexico_City (12:17 UTC).
+    - cron: "17 12 * * *"
   workflow_dispatch:
 
 permissions:
