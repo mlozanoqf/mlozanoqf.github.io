@@ -444,7 +444,7 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
 
 ```{=html}
 <p class="qf-intro">
-  I am a researcher and lecturer in quantitative finance, currently serving as Research Fellow at Alliance Manchester Business School, Teaching Fellow at SOAS University of London, and Professor of Finance at Universidad de Monterrey (UDEM). This site centralizes my academic work, online books in R, and practical tools for finance. It is designed for students, researchers, and practitioners.
+  I am a researcher and lecturer in quantitative finance, currently serving as Research Fellow at Alliance Manchester Business School, Teaching Fellow at SOAS University of London, and Professor of Finance at Universidad de Monterrey (UDEM). This site centralizes my academic work, online books on quantitative finance using R, and practical tools for finance. It is designed for students, researchers, and practitioners.
 </p>
 ```
 
