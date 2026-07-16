@@ -1,0 +1,28 @@
+project:
+  render:
+    - index.qmd
+  resources:
+    - latest-feeds.js
+    - data/latest-feeds.json
+    - analytics.html
+    - back-to-top.html
+    - contact.html
+    - "contact - copia.html"
+    - favicon.html
+    - progressbar.html
+    - android-chrome-192x192.png
+    - android-chrome-512x512.png
+    - apple-touch-icon.png
+    - favicon-16x16.png
+    - favicon-32x32.png
+    - favicon.ico
+    - "foto mlozano.jpg"
+    - "mlozano muppet.png"
+    - mlozano-muppet.png
+    - panda.png
+    - envelope-solid.svg
+    - google-scholar.svg
+    - ssrn-square.svg
+    - ssrn.svg
+    - p25.mp4
+    - site.webmanifest
