@@ -8,6 +8,8 @@ import path from "node:path";
 export const YOUTUBE_FEED =
   "https://www.youtube.com/feeds/videos.xml?channel_id=UChGz5VyXJdZOo1pquFyyOqw";
 export const SUBSTACK_FEED = "https://ahyaentendi.substack.com/feed";
+export const SUBSTACK_READER_FEED =
+  "https://r.jina.ai/http://ahyaentendi.substack.com/feed";
 
 const MONTHS = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -94,6 +96,31 @@ export function parseSubstack(xml) {
   );
 }
 
+export function parseSubstackReaderFeed(markdown) {
+  const urlMatch = markdown.match(
+    /https:\/\/ahyaentendi\.substack\.com\/p\/[a-z0-9-]+/i,
+  );
+  if (!urlMatch) throw new Error("Substack reader feed has no post URL");
+
+  const remainder = markdown.slice(urlMatch.index + urlMatch[0].length);
+  const dateMatch = remainder.match(
+    /(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s+\d{1,2}\s+[A-Z][a-z]{2}\s+\d{4}\s+\d{2}:\d{2}:\d{2}\s+GMT/,
+  );
+  if (!dateMatch) throw new Error("Substack reader feed has no publication date");
+
+  return {
+    url: urlMatch[0],
+    published: dateMatch[0],
+  };
+}
+
+export function parseSubstackReaderPost(markdown, url, feedPublished) {
+  const title = markdown.match(/^Title:\s*(.+)$/m)?.[1]?.trim();
+  const published = markdown.match(/^Published Time:\s*(.+)$/m)?.[1]?.trim();
+  if (!title) throw new Error("Substack reader post has no title");
+  return makeEntry(title, url, published || feedPublished);
+}
+
 async function fetchText(url, attempts = 3) {
   const errors = [];
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
@@ -121,6 +148,29 @@ async function fetchText(url, attempts = 3) {
   throw new Error(errors.join("; "));
 }
 
+async function fetchSubstackEntry(fetcher) {
+  try {
+    return parseSubstack(await fetcher(SUBSTACK_FEED, 1));
+  } catch (directError) {
+    try {
+      const fallback = parseSubstackReaderFeed(
+        await fetcher(SUBSTACK_READER_FEED),
+      );
+      const postUrl = new URL(fallback.url);
+      const readerPostUrl = `https://r.jina.ai/http://${postUrl.host}${postUrl.pathname}`;
+      return parseSubstackReaderPost(
+        await fetcher(readerPostUrl),
+        fallback.url,
+        fallback.published,
+      );
+    } catch (fallbackError) {
+      throw new Error(
+        `direct RSS failed (${directError.message}); reader fallback failed (${fallbackError.message})`,
+      );
+    }
+  }
+}
+
 function validEntry(value) {
   return value && typeof value === "object" &&
     ["title", "url", "published", "date"].every(
@@ -139,16 +189,16 @@ async function loadSnapshot(file) {
 
 export async function refreshSnapshot(existing, fetcher = fetchText) {
   const sources = [
-    ["youtube", YOUTUBE_FEED, parseYouTube],
-    ["substack", SUBSTACK_FEED, parseSubstack],
+    ["youtube", async () => parseYouTube(await fetcher(YOUTUBE_FEED))],
+    ["substack", async () => fetchSubstackEntry(fetcher)],
   ];
   const entries = {};
   const failures = [];
   let liveCount = 0;
 
-  for (const [name, url, parser] of sources) {
+  for (const [name, loadEntry] of sources) {
     try {
-      entries[name] = parser(await fetcher(url));
+      entries[name] = await loadEntry();
       liveCount += 1;
     } catch (error) {
       if (validEntry(existing[name])) {
@@ -215,6 +265,7 @@ async function main() {
   for (const failure of failures) {
     console.log(`::warning title=Partial feed refresh::${failure}`);
   }
+  if (failures.length) process.exitCode = 1;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

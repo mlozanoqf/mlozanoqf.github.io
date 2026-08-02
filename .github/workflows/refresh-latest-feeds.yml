@@ -51,12 +51,16 @@ jobs:
           site/tests/latest-feeds-browser.test.mjs
 
       - name: Refresh both feeds
+        id: refresh
         run: >-
           node site/scripts/update-latest-feeds.mjs
           --existing feed-data/data/latest-feeds.json
           --output feed-data/data/latest-feeds.json
 
       - name: Publish feed snapshot
+        if: >-
+          ${{ always() &&
+              (steps.refresh.outcome == 'success' || steps.refresh.outcome == 'failure') }}
         working-directory: feed-data
         run: |
           if git diff --quiet -- data/latest-feeds.json; then

@@ -3,9 +3,12 @@ import assert from "node:assert/strict";
 
 import {
   parseSubstack,
+  parseSubstackReaderFeed,
+  parseSubstackReaderPost,
   parseYouTube,
   refreshSnapshot,
   SUBSTACK_FEED,
+  SUBSTACK_READER_FEED,
   YOUTUBE_FEED,
 } from "../scripts/update-latest-feeds.mjs";
 
@@ -26,6 +29,26 @@ const substackXml = `<?xml version="1.0" encoding="UTF-8"?>
   <pubDate>Tue, 14 Jul 2026 07:49:21 GMT</pubDate>
 </item></channel></rss>`;
 
+const substackReaderFeed = `Title:
+
+URL Source: http://ahyaentendi.substack.com/feed
+
+Markdown Content:
+### [](https://ahyaentendi.substack.com/p/latest-essay)
+
+[https://ahyaentendi.substack.com/p/latest-essay](https://ahyaentendi.substack.com/p/latest-essay)
+
+Sun, 26 Jul 2026 07:01:00 GMT`;
+
+const substackReaderPost = `Title: Latest essay from reader
+
+URL Source: http://ahyaentendi.substack.com/p/latest-essay
+
+Published Time: 2026-07-26T07:01:00+00:00
+
+Markdown Content:
+Essay body.`;
+
 test("parses the first YouTube Atom entry", () => {
   assert.deepEqual(parseYouTube(youtubeXml), {
     title: "Latest video",
@@ -42,6 +65,38 @@ test("parses the first Substack RSS item", () => {
     published: "2026-07-14T07:49:21Z",
     date: "Jul 14, 2026",
   });
+});
+
+test("parses the Substack reader fallback", () => {
+  const feed = parseSubstackReaderFeed(substackReaderFeed);
+  assert.deepEqual(feed, {
+    url: "https://ahyaentendi.substack.com/p/latest-essay",
+    published: "Sun, 26 Jul 2026 07:01:00 GMT",
+  });
+  assert.deepEqual(
+    parseSubstackReaderPost(substackReaderPost, feed.url, feed.published),
+    {
+      title: "Latest essay from reader",
+      url: "https://ahyaentendi.substack.com/p/latest-essay",
+      published: "2026-07-26T07:01:00Z",
+      date: "Jul 26, 2026",
+    },
+  );
+});
+
+test("uses the reader fallback when GitHub cannot access Substack directly", async () => {
+  const fetcher = async (url) => {
+    if (url === YOUTUBE_FEED) return youtubeXml;
+    if (url === SUBSTACK_FEED) throw new Error("HTTP 403");
+    if (url === SUBSTACK_READER_FEED) return substackReaderFeed;
+    if (url === "https://r.jina.ai/http://ahyaentendi.substack.com/p/latest-essay") {
+      return substackReaderPost;
+    }
+    throw new Error(`unexpected URL: ${url}`);
+  };
+  const { snapshot, failures } = await refreshSnapshot({}, fetcher);
+  assert.equal(snapshot.substack.title, "Latest essay from reader");
+  assert.deepEqual(failures, []);
 });
 
 test("one failed source does not block the other", async () => {
