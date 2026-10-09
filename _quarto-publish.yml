@@ -3,6 +3,7 @@ project:
     - index.qmd
   resources:
     - downloads/ventas.sqlite
+    - downloads/taller-sql.pdf
     - latest-feeds.js
     - data/latest-feeds.json
     - analytics.html
