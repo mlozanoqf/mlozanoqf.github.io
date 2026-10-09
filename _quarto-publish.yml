@@ -2,6 +2,7 @@ project:
   render:
     - index.qmd
   resources:
+    - downloads/ventas.sqlite
     - latest-feeds.js
     - data/latest-feeds.json
     - analytics.html

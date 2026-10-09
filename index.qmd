@@ -498,6 +498,11 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
       <li><a href="https://mlozanoqf.shinyapps.io/opstr/" target="_blank" rel="noopener noreferrer">European options strategy analyzer</a></li>
       <li><a href="https://mlozanoqf.shinyapps.io/pass/" target="_blank" rel="noopener noreferrer">Mini Crypto Miner</a></li>
       <li><a href="https://edgar-mlozanoqf.streamlit.app/" target="_blank" rel="noopener noreferrer">EDGAR Explorer</a></li>
+      <li id="taller-sql" lang="es">
+        <a href="downloads/ventas.sqlite" download="ventas.sqlite"><strong>Taller de SQL — descargar datos (ventas.sqlite, 51,61 MB)</strong></a>
+        <p>Descarga el archivo. Abre <a href="https://sqlime.org/" target="_blank" rel="noopener noreferrer">Sqlime</a>, pulsa <strong>open file</strong> y selecciona <code>ventas.sqlite</code>.</p>
+        <p><small>Datos: Chen, D. (2015), <a href="https://doi.org/10.24432/C5BW33">Online Retail</a>, UCI Machine Learning Repository. Licencia <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Adaptación a SQLite para el taller: 541.909 filas; se omite CustomerID, se renombran campos, se normalizan fechas y se añaden la fila de origen y vistas.</small></p>
+      </li>
     </ul>
   </article>
 
