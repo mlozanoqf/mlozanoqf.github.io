@@ -9,6 +9,7 @@ site_static_source_files <- c(
   "_quarto.yml",
   "contact.html",
   "latest-feeds.js",
+  "github-contributions.js",
   "data/latest-feeds.json"
 )
 site_static_source_files <- site_static_source_files[file.exists(site_static_source_files)]
@@ -390,6 +391,35 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
   font-size: 0.79rem;
   color: var(--muted);
 }
+/* GitHub activity stays separate from the four homepage cards. */
+.qf-github {
+  margin-top: 1rem;
+  border-top-color: #2d8a4e;
+}
+.qf-github h2 {
+  margin: 0.2rem 0 0.45rem;
+  color: var(--ink);
+  font-size: 1.35rem;
+}
+.qf-github-chart {
+  overflow-x: auto;
+  margin: 0.8rem 0 0.4rem;
+}
+.qf-github-chart svg {
+  display: block;
+  width: 100%;
+  min-width: 680px;
+  height: auto;
+}
+.qf-github-label {
+  font-family: inherit;
+  font-size: 9px;
+  fill: var(--muted);
+}
+.qf-github .qf-github-note {
+  margin-bottom: 0;
+  font-size: 0.8rem;
+}
 @media (max-width: 900px) {
   .qf-hero {
     text-align: center;
@@ -517,6 +547,17 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
     </ul>
   </article>
 </section>
+```
+```{=html}
+<section class="qf-card qf-github" aria-labelledby="github-contributions-heading">
+  <h2 id="github-contributions-heading">GitHub contributions</h2>
+  <p id="github-contributions-status" role="status">Loading public GitHub activity...</p>
+  <div id="github-contributions-chart" class="qf-github-chart" role="region" aria-label="Daily contribution calendar; scroll horizontally on small screens" tabindex="0" hidden></div>
+  <p><a href="https://github.com/mlozanoqf" target="_blank" rel="noopener noreferrer">View activity on GitHub</a></p>
+  <p class="qf-github-note">Updates automatically. Activity may take time to appear. Data via <a href="https://github.com/grubersjoe/github-contributions-api" target="_blank" rel="noopener noreferrer">GitHub Contributions API</a>.</p>
+  <noscript><p>Enable JavaScript to load the calendar, or use the GitHub link above.</p></noscript>
+</section>
+<script src="github-contributions.js" defer></script>
 ```
 ```{=html}
 <section class="qf-contact-simple">

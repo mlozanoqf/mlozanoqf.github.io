@@ -4,6 +4,7 @@ project:
   resources:
     - downloads/ventas.sqlite
     - downloads/taller-sql.pdf
+    - github-contributions.js
     - latest-feeds.js
     - data/latest-feeds.json
     - analytics.html
